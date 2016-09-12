@@ -1,0 +1,48 @@
+#include <iostream> 
+#include <string>
+#include <cstdio>
+
+using namespace std; 
+int main (int argc, char *argv[]) {
+	
+	int jaar, maand, dag;
+	string input;
+	string dagen [7] = {"Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"};
+
+	cout << "Please enter the date (dd/mm/yyyy):" << endl;
+
+	getline(cin,input);
+
+	int n = sscanf(input.c_str(), "%d/%d/%d", &dag, &maand, &jaar);
+
+	if (n != 3) {
+		cout << input << " is not a valid date." << endl;
+	}
+
+	int a = jaar - (14 - maand) / 12;
+	int b = a + a / 4 - a / 100 + a / 400;
+	int c = maand + 12 * ((14 - maand) / 12) - 2;
+	int d = (dag + b + (31 * c) / 12) % 7;
+
+	cout << "U bent geboren op een: " + dagen[d-1] << endl;
+
+	return d;
+}
+
+bool valid_date(int j) {
+
+}
+
+bool leap_year(int j) {
+	bool schrikkel = false;
+
+	if ((j % 4 == 0) && (j % 100 != 0)) {
+		schrikkel = true;
+	}
+	if (j % 400 == 0) {
+		schrikkel = true;
+	}
+
+	return schrikkel;
+}
+
