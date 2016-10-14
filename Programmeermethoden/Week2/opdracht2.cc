@@ -25,23 +25,26 @@ int draaiom (int n) {
 		n = n / 10;
 	}
 
-	return n;
+	return omgekeerd;
 }
 
 bool islychrel (int a) {
 
 	int n = 0;
+	int teller = 0;
 
-	while (!(a <= INT_MAX)) {
+	while (a <= INT_MAX) {
 
-		n = a;
-		draaiom(n);
+		n = draaiom(a);
 
 		if (n == a) {
+			cout << teller << "\n";
 			return 0;
 		} else {
 			a += n;
 		}
+		teller++;
+		cout << a << '\n';
 	}
 
 	return 1;
@@ -56,9 +59,8 @@ int main () {
 	int lijnteller = 0, diepte = 0, tabgrootte = 0, getal = 0;
 	bool comment = 0, slash = 0, inspringen = 0, sluitacc = 0, poep = 0;
 
-	int testgetal = 12345;
+	int testgetal = 89;
 
-	cout << draaiom(testgetal);
 	cout << islychrel(testgetal);
 
 	cout << "Welke file wilt u openen? ";
