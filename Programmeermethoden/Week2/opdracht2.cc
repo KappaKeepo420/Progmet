@@ -163,6 +163,22 @@ int main () {
 
 /*
 void doewat (ifstream &invoer, ofstream &uitvoer) {
+			cout << "Huidige aantal afgedrukte karakters (voor regel " << endlines << "): " << gelezenkar << "\n" << "\n";
+		}
 
+		if (kar >= '0' && kar <= '9') {
+			getal = getal * 10 + kar;
+		} else if (getal != 0) {
+			islychrel(getal);
+			getal = 0;
+		}
+
+		if (!slash && !comment) {
+			uitvoer.put(kar);
+			geprintkar++;
+		}
+	}
+	cout << "Uiteindelijke aantal ingelezen karakters: " << gelezenkar << "\n";
+	cout << "Uiteindelijke aantal afgedrukte karakters: " <<
 
 */
