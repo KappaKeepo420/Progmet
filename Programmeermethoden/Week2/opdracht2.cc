@@ -65,6 +65,20 @@ int main () {
 	int endlines = 0, statistiekregel = 0;
 	bool comment = 0, slash = 0, inspringen = 0, sluitacc = 0, poep = 0;
 
+	cout << "------------------------------------------------------------" << "\n";
+	cout << "|	Auteurs: 			- Jort Gijzen 		1874233			|" << "\n";
+	cout << "|						- Lennard Schaap	1914839			|" << "\n";
+	cout << "|	Studie:				- Bsc Informatica					|" << "\n";
+	cout << "|	Opdracht:			- Tweede Opdracht: Netjes			|" << "\n";
+	cout << "|	Datum:				- Oktober 2016						|" << "\n";
+	cout << "|															|" << "\n";
+	cout << "|	Dit programma probeert een foutloos C++ net uit te 		|" << "\n";
+	cout << "|	printen door commentaar eruit te halen, inspringen te 	|" << "\n";
+	cout << "|	regelen en lychrel getallen te ontdekken.				|" << "\n";
+	cout << "------------------------------------------------------------" << "\n" << "\n" << "\n";
+
+
+
 	cout << "Welke file wilt u openen? ";
 	cin >> filenaam;
 
@@ -73,6 +87,7 @@ int main () {
 
 	cout << "Om de hoeveel regels wilt u een statistiek?: ";
 	cin >> statistiekregel;
+
 
 	invoer.open (filenaam.c_str());
 	uitvoer.open ("output.cc");
@@ -131,14 +146,13 @@ int main () {
 		}
 
 		if (endlines % statistiekregel == 0 && kar == '\n') {
-			cout << "Huidige aantal ingelezen karakters (voor regel " << endlines << "): " << gelezenkar << "\n";
+			cout << "Huidige aantal ingelezen  karakters (voor regel " << endlines << "): " << gelezenkar << "\n";
 			cout << "Huidige aantal afgedrukte karakters (voor regel " << endlines << "): " << gelezenkar << "\n" << "\n";
 		}
 
 		if (kar >= '0' && kar <= '9') {
 			getal = getal * 10 + kar;
 		} else if (getal != 0) {
-			cout << getal;
 			islychrel(getal);
 			getal = 0;
 		}
@@ -148,7 +162,7 @@ int main () {
 			geprintkar++;
 		}
 	}
-	cout << "Uiteindelijke aantal ingelezen karakters: " << gelezenkar << "\n";
+	cout << "Uiteindelijke aantal ingelezen  karakters: " << gelezenkar << "\n";
 	cout << "Uiteindelijke aantal afgedrukte karakters: " << geprintkar << "\n";
 	cout << "Totaal gelezen regels: " << endlines << "\n";
 }
