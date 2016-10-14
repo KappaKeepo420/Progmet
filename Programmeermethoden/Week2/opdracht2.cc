@@ -53,7 +53,7 @@ int main () {
 	ofstream uitvoer;
 	string filenaam;
 	char kar;
-	int lijnteller = 0, diepte = 0, tabgrootte = 0, getal = 0;
+	int lijnteller = 0, diepte = 0, tabgrootte = 0, getal = 0, gelezenkar = 0, geprintkar = 0;
 	bool comment = 0, slash = 0, inspringen = 0, sluitacc = 0, poep = 0;
 
 	int testgetal = 12345;
@@ -82,6 +82,7 @@ int main () {
 	while (!invoer.eof()) {
 
 		invoer.get(kar);
+		gelezenkar++;
 
 		if (kar == '/' && !comment && !slash) {
 			slash = 1;
@@ -130,8 +131,11 @@ int main () {
 
 		if (!slash && !comment) {
 			uitvoer.put(kar);
+			geprintkar++;
 		}
 	}
+	cout << "Aantal ingelezen karakters: " << gelezenkar << "\n";
+	cout << "Aantal afgedrukte karakters: " << geprintkar << "\n";
 }
 
 
