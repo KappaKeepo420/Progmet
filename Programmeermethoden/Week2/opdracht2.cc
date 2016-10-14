@@ -63,6 +63,7 @@ int main () {
 	char kar;
 	int lijnteller = 0, diepte = 0, tabgrootte = 0, getal = 0, gelezenkar = 0, geprintkar = 0;
 	int cijfer = 0;
+	int endlines = 0, statistiekregel = 0;
 	bool comment = 0, slash = 0, inspringen = 0, sluitacc = 0, poep = 0;
 
 	cout << "Welke file wilt u openen? ";
@@ -70,6 +71,10 @@ int main () {
 
 	cout << "Kies een tabgrootte: ";
 	cin >> tabgrootte;
+	cout << "\n";
+
+	cout << "Om de hoeveel regels wilt u een statistiek?: ";
+	cin >> statistiekregel;
 	cout << "\n";
 
 	invoer.open (filenaam.c_str());
@@ -104,6 +109,7 @@ int main () {
 			comment = 0;
 			inspringen = 1;
 			slash = 0;
+			endlines++;
 		} else if (inspringen) {
 			if (kar == ' ' || kar == '\t') {
 				comment = 1;
@@ -135,11 +141,17 @@ int main () {
 			getal = 0;
 		}
 
+		if (endlines % statistiekregel == 0 && kar == '\n') {
+			cout << "Huidige aantal ingelezen karakters (voor regel " << endlines << "): " << gelezenkar << "\n";
+			cout << "Huidige aantal afgedrukte karakters (voor regel " << endlines << "): " << gelezenkar << "\n" << "\n";
+		}
+
 		if (!slash && !comment) {
 			uitvoer.put(kar);
 			geprintkar++;
 		}
 	}
-	cout << "Aantal ingelezen karakters: " << gelezenkar << "\n";
-	cout << "Aantal afgedrukte karakters: " << geprintkar << "\n";
+	cout << "Uiteindelijke aantal ingelezen karakters: " << gelezenkar << "\n";
+	cout << "Uiteindelijke aantal afgedrukte karakters: " << geprintkar << "\n";
+	cout << "Totaal gelezen regels: " << endlines << "\n";
 }
