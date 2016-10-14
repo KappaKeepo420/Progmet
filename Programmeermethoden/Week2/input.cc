@@ -10,7 +10,7 @@ char globaa1[] = {'{', 'o', '}'}; // let op de puntkomma! //liever niet globaal
 
 void test() {
 	cout << 458.196/3 << endl;
-}
+     }
 
 // main-functie
 int main(int argc, char * argv[]) { // C-style main()
