@@ -12,8 +12,40 @@
 #include <string>
 #include <cstdlib>
 #include <fstream>
+#include <climits>
 
 using namespace std; 
+
+int draaiom (int n) {
+
+	int omgekeerd = 0;
+
+	while (n != 0) {
+		omgekeerd = n % 10 + omgekeerd * 10;
+		n = n / 10;
+	}
+
+	return n;
+}
+
+bool islychrel (int a) {
+
+	int n = 0;
+
+	while (!(a <= INT_MAX)) {
+
+		n = a;
+		draaiom(n);
+
+		if (n == a) {
+			return 0;
+		} else {
+			a += n;
+		}
+	}
+
+	return 1;
+}
 
 int main () {
 
@@ -21,9 +53,14 @@ int main () {
 	ofstream uitvoer;
 	string filenaam;
 	char kar;
-	int lijnteller = 0, diepte = 0, tabgrootte = 0;
+	int lijnteller = 0, diepte = 0, tabgrootte = 0, getal = 0;
 	bool comment = 0, slash = 0, inspringen = 0, sluitacc = 0, poep = 0;
+/*
+	int testgetal = 12345;
 
+	cout << draaiom(testgetal);
+	cout << islychrel(testgetal);
+*/
 	cout << "Welke file wilt u openen? ";
 	cin >> filenaam;
 
@@ -84,18 +121,27 @@ int main () {
 			slash = 0;
 		}
 
+		if (kar >= '0' && kar <= '9') {
+			getal = getal * 10 + kar;
+		} else if (getal != 0) {
+				islychrel(getal);
+			}
+			getal = 0;
+		}
+
 		if (!slash && !comment) {
 			uitvoer.put(kar);
 		}
 	}
 }
 
+
+
+
+
+
 /*
 void doewat (ifstream &invoer, ofstream &uitvoer) {
 
-}
-while(n != 0) {
-	reverse = n % 10 + reverse * 10;
-	n = n / 10;
-}
+
 */
