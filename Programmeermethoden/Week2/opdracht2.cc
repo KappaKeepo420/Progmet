@@ -32,8 +32,9 @@ bool islychrel (int a) {
 
 	int n = 0;
 	int teller = 0;
+	bool overflow = 0;
 
-	while (a <= INT_MAX) {
+	while (!overflow) {
 
 		n = draaiom(a);
 
@@ -41,6 +42,10 @@ bool islychrel (int a) {
 			cout << teller << "\n";
 			return 0;
 		} else {
+			if (a > 0 && n > INT_MAX - a) {
+				cout << "Overflow gedetecteerd na " << teller << " iteraties.\n";
+				return 0;
+			}
 			a += n;
 		}
 		teller++;
