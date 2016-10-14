@@ -30,26 +30,26 @@ int draaiom (int n) {
 
 bool islychrel (int a) {
 
-	int n = 0;
-	int teller = 0;
+	int getal = a, n = 0, teller = 0;
 	bool overflow = 0;
 
 	while (!overflow) {
 
 		n = draaiom(a);
 
-		if (n == a) {
-			cout << teller << "\n";
+		if ((n < 0) || (INT_MAX - a < n)) {
+			cout << getal << ": Overflow gedetecteerd na " << teller << " iteraties.\n";
+			return 0;
+		} else if (n == a) {
+
+			cout << getal << " is geen lychrel getal.\n";
+			cout << "Palindroom gevonden na " << teller << " iteraties\n";
 			return 0;
 		} else {
-			if ((n < 0 ) || (INT_MAX - a < n)) {
-				cout << "Overflow gedetecteerd na " << teller << " iteraties.\n";
-				return 0;
-			}
 			a += n;
 		}
+		
 		teller++;
-		cout << a << '\n';
 	}
 
 	return 1;
@@ -64,11 +64,6 @@ int main () {
 	int lijnteller = 0, diepte = 0, tabgrootte = 0, getal = 0, gelezenkar = 0, geprintkar = 0;
 	int endlines = 0, statistiekregel = 0;
 	bool comment = 0, slash = 0, inspringen = 0, sluitacc = 0, poep = 0;
-
-	int testgetal = 2147483647;
-
-	cout << draaiom(testgetal);
-	//cout << islychrel(testgetal);
 
 	cout << "Welke file wilt u openen? ";
 	cin >> filenaam;
@@ -143,6 +138,7 @@ int main () {
 		if (kar >= '0' && kar <= '9') {
 			getal = getal * 10 + kar;
 		} else if (getal != 0) {
+			cout << getal;
 			islychrel(getal);
 			getal = 0;
 		}
