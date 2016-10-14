@@ -55,12 +55,12 @@ int main () {
 	char kar;
 	int lijnteller = 0, diepte = 0, tabgrootte = 0, getal = 0;
 	bool comment = 0, slash = 0, inspringen = 0, sluitacc = 0, poep = 0;
-/*
+
 	int testgetal = 12345;
 
 	cout << draaiom(testgetal);
 	cout << islychrel(testgetal);
-*/
+
 	cout << "Welke file wilt u openen? ";
 	cin >> filenaam;
 
@@ -124,8 +124,7 @@ int main () {
 		if (kar >= '0' && kar <= '9') {
 			getal = getal * 10 + kar;
 		} else if (getal != 0) {
-				islychrel(getal);
-			}
+			islychrel(getal);
 			getal = 0;
 		}
 
