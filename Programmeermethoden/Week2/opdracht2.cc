@@ -86,6 +86,18 @@ int netjes () {
 	int cijfer = 0, endlines = 0, statistiekregel = 0;
 	bool comment = 0, slash = 0, inspringen = 0, sluitacc = 0, poep = 0;
 
+	cout << "------------------------------------------------------------" << "\n";
+	cout << "|  Auteurs:            - Jort Gijzen       1874233         |" << "\n";
+	cout << "|                      - Lennard Schaap    1914839         |" << "\n";
+	cout << "|  Studie:             - Bsc Informatica                   |" << "\n";
+	cout << "|  Opdracht:           - Tweede Opdracht: Netjes           |" << "\n";
+	cout << "|  Datum:              - Oktober 2016                      |" << "\n";
+	cout << "|                                                          |" << "\n";
+	cout << "|  Dit programma probeert een foutloos C++ net uit te      |" << "\n";
+	cout << "|  printen door commentaar eruit te halen, inspringen te   |" << "\n";
+	cout << "|  regelen en lychrel getallen te ontdekken.               |" << "\n";
+	cout << "------------------------------------------------------------" << "\n" << "\n" << "\n";
+
 	cout << "Welke file wilt u openen? ";
 	cin >> filenaam;
 
@@ -96,6 +108,7 @@ int netjes () {
 	cout << "Om de hoeveel regels wilt u een statistiek?: ";
 	cin >> statistiekregel;
 	cout << "\n";
+
 
 	invoer.open (filenaam.c_str());
 	uitvoer.open ("output.cc");
@@ -154,6 +167,12 @@ int netjes () {
 			slash = 0;
 		}
 
+		/* Hier worden de tussenstatistieken geprint */
+		if (endlines % statistiekregel == 0 && kar == '\n') {
+			cout << "Huidige aantal ingelezen  karakters (voor regel " << endlines << "): " << gelezenkar << "\n";
+			cout << "Huidige aantal afgedrukte karakters (voor regel " << endlines << "): " << gelezenkar << "\n" << "\n";
+		}
+
 		/* Leest getallen in de invoerfile en stopt deze in de islychrel functie. */
 		if ((kar >= '0' && kar <= '9') && (!comment)){
 			cijfer = kar - 48;
@@ -162,8 +181,7 @@ int netjes () {
 			islychrel(getal);
 			getal = 0;
 		}
-
-		/* Hier worden de tussenstatistieken geprint */
+		
 		if (endlines % statistiekregel == 0 && kar == '\n') {
 			cout << "Huidige aantal ingelezen karakters (voor regel " << endlines << "): " << gelezenkar << "\n";
 			cout << "Huidige aantal afgedrukte karakters (voor regel " << endlines << "): " << gelezenkar << "\n" << "\n";
@@ -178,6 +196,7 @@ int netjes () {
 
 	/* Hier worden de laatste statistieken geprint */
 	cout << "Uiteindelijke aantal ingelezen karakters: " << gelezenkar << "\n";
+	cout << "Uiteindelijke aantal ingelezen  karakters: " << gelezenkar << "\n";
 	cout << "Uiteindelijke aantal afgedrukte karakters: " << geprintkar << "\n";
 	cout << "Totaal gelezen regels: " << endlines << "\n";
 }
