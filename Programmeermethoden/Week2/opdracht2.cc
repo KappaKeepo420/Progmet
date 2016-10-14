@@ -56,37 +56,35 @@ int main () {
 			uitvoer.put('/');
 		} else if (kar == '{' && !comment) {
 			diepte++;
-		} else if (kar == '}') {
-			diepte--;
-			if (inspringen) {
-				sluitacc = 1;
-			}
 		} else if (kar == '\n') {
 			lijnteller++;
 			comment = 0;
 			inspringen = 1;
 			slash = 0;
-			if (sluitacc) {
-				uitvoer.put('}');
-				sluitacc = 0;
-			}
 		} else if (inspringen) {
 			if (kar == ' ' || kar == '\t') {
 				comment = 1;
 			} else if (kar == '/') {
 				slash = 1;
 			} else if (!slash) {
+				if (kar == '}') {
+					diepte--;
+					comment = 0;
+				}
+
 				for (int i = 0; i < (diepte * tabgrootte); i++) {
 					uitvoer.put(' ');
 				}
 				comment = 0;
 				inspringen = 0;
 			}
+		} else if (kar == '}') {
+			diepte--;
 		} else {
 			slash = 0;
 		}
 
-		if (!slash && !comment && !sluitacc) {
+		if (!slash && !comment) {
 			uitvoer.put(kar);
 		}
 	}
