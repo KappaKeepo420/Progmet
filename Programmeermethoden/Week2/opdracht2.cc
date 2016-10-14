@@ -21,8 +21,8 @@ int main () {
 	ofstream uitvoer;
 	string filenaam;
 	char kar;
-	int lijnteller, diepte, tabgrootte = 0;
-	bool comment, stop, stopcomment, inspringen = false;
+	int lijnteller = 0, diepte = 0, tabgrootte = 0;
+	bool comment = 0, slash = 0, inspringen = 0, sluitacc = 0, poep = 0;
 
 	cout << "Welke file wilt u openen? ";
 	cin >> filenaam;
@@ -43,50 +43,50 @@ int main () {
 	}
 	
 	while (!invoer.eof()) {
+
 		invoer.get(kar);
-		
-		if ((kar == '/') && (comment == false) && (quote == false)) {
-			slash = true;
-		} else if ((kar == '/') && (slash == true) && (quote == false)) {
-			comment = true;
+
+		if (kar == '/' && !comment && !slash) {
+			slash = 1;
+		} else if (kar == '/' && slash) {
+			comment = 1;
+		} else if (kar != '/' && slash && !comment) {
+			slash = 0;
+			comment = 0;
+			uitvoer.put('/');
+		} else if (kar == '{' && !comment) {
+			diepte++;
+		} else if (kar == '}') {
+			diepte--;
+			if (inspringen) {
+				sluitacc = 1;
+			}
 		} else if (kar == '\n') {
 			lijnteller++;
-			stop = false;
-			comment = false;
-			inspringen = true;
+			comment = 0;
+			inspringen = 1;
+			slash = 0;
+			if (sluitacc) {
+				uitvoer.put('}');
+				sluitacc = 0;
+			}
+		} else if (inspringen) {
+			if (kar == ' ' || kar == '\t') {
+				comment = 1;
+			} else if (kar == '/') {
+				slash = 1;
+			} else if (!slash) {
+				for (int i = 0; i < (diepte * tabgrootte); i++) {
+					uitvoer.put(' ');
+				}
+				comment = 0;
+				inspringen = 0;
+			}
 		} else {
-			comment = false;
-		} 
-
-		if (kar == '"') {
-			quote = true;
-		}
-		if (kar != '/' && slash == true) {
-			uitvoer.put('/');
-			slash = false;
-			comment = false;
-			stop = false;
+			slash = 0;
 		}
 
-		if ((kar == '{') && (!stop)) {
-			diepte += 1;
-		} else if ((kar == '}') && (!stop)) {
-			diepte -= 1;
-		} else if ((kar == ' ') || (kar == '\t')) {
-			if (inspringen == true) {
-				stop = true;
-			}
-		} else if (inspringen == true) { // gebeurt nooit
-
-			for (int i = 0; i < (diepte * tabgrootte); i++) {
-				uitvoer.put(' ');
-			}
-
-			inspringen = false;
-			stop = false;
-		}
-
-		if (!stop && !comment) {
+		if (!slash && !comment && !sluitacc) {
 			uitvoer.put(kar);
 		}
 	}
