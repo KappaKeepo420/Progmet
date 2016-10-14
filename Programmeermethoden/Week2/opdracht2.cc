@@ -42,7 +42,7 @@ bool islychrel (int a) {
 			cout << teller << "\n";
 			return 0;
 		} else {
-			if (a > 0 && n > INT_MAX - a) {
+			if ((n < 0 ) || (INT_MAX - a < n)) {
 				cout << "Overflow gedetecteerd na " << teller << " iteraties.\n";
 				return 0;
 			}
@@ -64,9 +64,10 @@ int main () {
 	int lijnteller = 0, diepte = 0, tabgrootte = 0, getal = 0, gelezenkar = 0, geprintkar = 0;
 	bool comment = 0, slash = 0, inspringen = 0, sluitacc = 0, poep = 0;
 
-	int testgetal = 89;
+	int testgetal = 2147483647;
 
-	cout << islychrel(testgetal);
+	cout << draaiom(testgetal);
+	//cout << islychrel(testgetal);
 
 	cout << "Welke file wilt u openen? ";
 	cin >> filenaam;
