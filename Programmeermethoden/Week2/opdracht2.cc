@@ -67,15 +67,15 @@ int main () {
 	bool comment = 0, slash = 0, inspringen = 0, sluitacc = 0, poep = 0;
 
 	cout << "------------------------------------------------------------" << "\n";
-	cout << "|	Auteurs: 			- Jort Gijzen 		1874233			|" << "\n";
-	cout << "|						- Lennard Schaap	1914839			|" << "\n";
-	cout << "|	Studie:				- Bsc Informatica					|" << "\n";
-	cout << "|	Opdracht:			- Tweede Opdracht: Netjes			|" << "\n";
-	cout << "|	Datum:				- Oktober 2016						|" << "\n";
-	cout << "|															|" << "\n";
-	cout << "|	Dit programma probeert een foutloos C++ net uit te 		|" << "\n";
-	cout << "|	printen door commentaar eruit te halen, inspringen te 	|" << "\n";
-	cout << "|	regelen en lychrel getallen te ontdekken.				|" << "\n";
+	cout << "|  Auteurs:            - Jort Gijzen       1874233         |" << "\n";
+	cout << "|                      - Lennard Schaap    1914839         |" << "\n";
+	cout << "|  Studie:             - Bsc Informatica                   |" << "\n";
+	cout << "|  Opdracht:           - Tweede Opdracht: Netjes           |" << "\n";
+	cout << "|  Datum:              - Oktober 2016                      |" << "\n";
+	cout << "|                                                          |" << "\n";
+	cout << "|  Dit programma probeert een foutloos C++ net uit te      |" << "\n";
+	cout << "|  printen door commentaar eruit te halen, inspringen te   |" << "\n";
+	cout << "|  regelen en lychrel getallen te ontdekken.               |" << "\n";
 	cout << "------------------------------------------------------------" << "\n" << "\n" << "\n";
 
 
