@@ -38,12 +38,12 @@ bool islychrel (int a) {
 		n = draaiom(a);
 
 		if ((n < 0) || (INT_MAX - a < n)) {
-			cout << getal << ": Overflow gedetecteerd na " << teller << " iteraties.\n";
+			cout << getal << ": Overflow gedetecteerd na " << teller << " iteraties.\n\n";
 			return 0;
 		} else if (n == a) {
 
 			cout << getal << " is geen lychrel getal.\n";
-			cout << "Palindroom gevonden na " << teller << " iteraties\n";
+			cout << "Palindroom gevonden na " << teller << " iteraties.\n\n";
 			return 0;
 		} else {
 			a += n;
@@ -62,6 +62,7 @@ int main () {
 	string filenaam;
 	char kar;
 	int lijnteller = 0, diepte = 0, tabgrootte = 0, getal = 0, gelezenkar = 0, geprintkar = 0;
+	int cijfer = 0;
 	int endlines = 0, statistiekregel = 0;
 	bool comment = 0, slash = 0, inspringen = 0, sluitacc = 0, poep = 0;
 
@@ -84,9 +85,11 @@ int main () {
 
 	cout << "Kies een tabgrootte: ";
 	cin >> tabgrootte;
+	cout << "\n";
 
 	cout << "Om de hoeveel regels wilt u een statistiek?: ";
 	cin >> statistiekregel;
+	cout << "\n";
 
 
 	invoer.open (filenaam.c_str());
@@ -150,8 +153,9 @@ int main () {
 			cout << "Huidige aantal afgedrukte karakters (voor regel " << endlines << "): " << gelezenkar << "\n" << "\n";
 		}
 
-		if (kar >= '0' && kar <= '9') {
-			getal = getal * 10 + kar;
+		if ((kar >= '0' && kar <= '9') && (!comment)){
+			cijfer = kar - 48;
+			getal = (getal * 10) + cijfer;
 		} else if (getal != 0) {
 			islychrel(getal);
 			getal = 0;
@@ -166,30 +170,3 @@ int main () {
 	cout << "Uiteindelijke aantal afgedrukte karakters: " << geprintkar << "\n";
 	cout << "Totaal gelezen regels: " << endlines << "\n";
 }
-
-
-
-
-
-
-/*
-void doewat (ifstream &invoer, ofstream &uitvoer) {
-			cout << "Huidige aantal afgedrukte karakters (voor regel " << endlines << "): " << gelezenkar << "\n" << "\n";
-		}
-
-		if (kar >= '0' && kar <= '9') {
-			getal = getal * 10 + kar;
-		} else if (getal != 0) {
-			islychrel(getal);
-			getal = 0;
-		}
-
-		if (!slash && !comment) {
-			uitvoer.put(kar);
-			geprintkar++;
-		}
-	}
-	cout << "Uiteindelijke aantal ingelezen karakters: " << gelezenkar << "\n";
-	cout << "Uiteindelijke aantal afgedrukte karakters: " <<
-
-*/
