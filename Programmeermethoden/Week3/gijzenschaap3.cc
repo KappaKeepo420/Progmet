@@ -29,7 +29,7 @@ int leesgetal (int bovengrens) {
 		if (kar >= '0' && kar <= '9') {
 			cijfer = kar - 48;
 
-			if (getal * 10 ) {
+			if (getal * 10) {
 				cout << "Overflow gedetecteerd, probeer opnieuw.\n";
 				getal = 0;
 				cijfer = 0;
