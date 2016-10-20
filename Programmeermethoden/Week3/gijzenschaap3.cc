@@ -20,7 +20,9 @@ char getkarakter () {
 	char keuze;
 
 	cin.clear();
-	keuze = cin.get();
+
+	cin.get(keuze);
+
 	cin.ignore(10000, '\n');
 
 	return keuze;
@@ -85,8 +87,6 @@ int keuzemenu () {
 		menu(0);
 
 		keuze = getkarakter();
-
-		cout << "penis";
 
 		switch (keuze) {
 
