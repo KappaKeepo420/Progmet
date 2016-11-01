@@ -12,17 +12,49 @@
 #include <string>
 #include <cstdlib>
 #include <fstream>
+#include <climits>
 
 using namespace std; 
+
+int leesgetal (int bovengrens) {
+
+	int cijfer = 0, getal = 0;
+	char kar = cin.get();
+
+	while (kar == '\n') {
+		kar = cin.get();
+	}
+
+	while (kar != '\n') {
+		if (kar >= '0' && kar <= '9') {
+			cijfer = kar - 48;
+
+			if (getal * 10) {
+				cout << "Overflow gedetecteerd, probeer opnieuw.\n";
+				getal = 0;
+				cijfer = 0;
+				cin.clear();
+				break;
+			}
+
+			getal = (getal * 10) + cijfer;
+		}
+		kar = cin.get();
+	}
+
+	while (getal > bovengrens) {
+		getal /= 10;
+	}
+
+	return getal;
+}
 
 char getkarakter () {
 
 	char keuze;
 
 	cin.clear();
-
 	cin.get(keuze);
-
 	cin.ignore(10000, '\n');
 
 	return keuze;
@@ -117,7 +149,10 @@ int keuzemenu () {
 
 int main () {
 
-keuzemenu();
+cout << "invoer: ";
+cout << "getal: " << leesgetal(10000) << "\n";
+
+//keuzemenu();
 
 return 1;
 
