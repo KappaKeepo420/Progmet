@@ -13,8 +13,18 @@
 #include <cstdlib>
 #include <fstream>
 #include <climits>
+#include "nonogram.h"
 
 using namespace std; 
+
+int randomgetal (int range) {
+
+	static int getal = 42;
+
+	getal = (221 * getal + 1) % range;
+
+	return getal;
+}
 
 int leesgetal (int bovengrens) {
 
@@ -29,8 +39,8 @@ int leesgetal (int bovengrens) {
 		if (kar >= '0' && kar <= '9') {
 			cijfer = kar - 48;
 
-			if (getal * 10) {
-				cout << "Overflow gedetecteerd, probeer opnieuw.\n";
+			if (getal >= (INT_MAX - cijfer) / 10) {
+				cout << "Overflow gedetecteerd, probeer opnieuw." << endl;
 				getal = 0;
 				cijfer = 0;
 				cin.clear();
@@ -149,11 +159,21 @@ int keuzemenu () {
 
 int main () {
 
-cout << "invoer: ";
-cout << "getal: " << leesgetal(10000) << "\n";
+	/*
+		for (int i = 0; i < 99; i++) {
+			cout << randomgetal(100) << endl;
+		}
+	*/
 
-//keuzemenu();
+	nonogram a;
 
-return 1;
+	a.drukaf();
+
+	cout << "invoer: ";
+	cout << "getal: " << leesgetal(10000) << "\n";
+
+	//keuzemenu();
+
+	return 1;
 
 }
