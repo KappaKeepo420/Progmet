@@ -15,7 +15,7 @@
 #include <climits>
 #include "nonogram.h"
 
-using namespace std; 
+using namespace std;
 
 int randomgetal (int range) {
 
@@ -71,7 +71,6 @@ char getkarakter () {
 }
 
 void menu (bool t) {
-
 	cout << "S\e[4mc\e[0mhoon | \e[4mR\e[0mandom | "
 		"\e[4mP\e[0marameters | \e[4mS\e[0mtoppen\e[0m ";
 
