@@ -159,15 +159,10 @@ char getkarakter () {
 	return keuze;
 }
 
-<<<<<<< HEAD
-void menu (bool t) {
-	cout << "S\e[4mc\e[0mhoon | \e[4mR\e[0mandom | "
-=======
 void menu (int optie) {
 
 	if (optie == 0) { 
 		cout << " S\e[4mc\e[0mhoon | \e[4mR\e[0mandom | "
->>>>>>> a640751605c34ae182183a2c993f5014fc18401d
 		"\e[4mP\e[0marameters | \e[4mS\e[0mtoppen\e[0m ";
 	}
 	if (optie == 1) {
