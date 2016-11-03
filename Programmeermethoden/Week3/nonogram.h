@@ -1,8 +1,8 @@
 #define MAX 30
 
-class nonogram {
+class Nonogram {
 	public:
-		nonogram ();
+		Nonogram();
 		void drukaf();
 		void vulrandom();
 		void maakschoon();

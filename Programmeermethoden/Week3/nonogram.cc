@@ -6,11 +6,11 @@
 
 using namespace std; 
 
-void nonogram::drukaf() {
+void Nonogram::drukaf() {
 	cout << "tyfushoer" << endl;
 }
 
-int main() {
-
-	return 0;
+Nonogram::Nonogram() {
+	
+	int nonogram [MAX][MAX];
 }
