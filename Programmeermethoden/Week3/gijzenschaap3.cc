@@ -30,6 +30,11 @@ class Nonogram {
 		void maakschoon();
 		void maakbeschrijvingen();
 		void zetpercentage();
+		void vullen();
+		void verplaatshoog();
+		void verplaatslinks();
+		void verplaatsrechts();
+		void verplaatslaag();
 		void setHoogte(int hoogte);
 		void setBreedte(int breedte);
 	private:
@@ -51,14 +56,12 @@ void Nonogram::setHoogte (int hoogte) {
 
 	this->hoogte = hoogte;
 	this->muislocatie[0] = hoogte / 2;
-	this->muislocatie[1] = breedte / 2;
 	maakschoon();
 }
 
 void Nonogram::setBreedte (int breedte) {
 
 	this->breedte = breedte;
-	this->muislocatie[0] = hoogte / 2;
 	this->muislocatie[1] = breedte / 2;
 	maakschoon();
 }
@@ -100,11 +103,44 @@ void Nonogram::maakschoon () {
 void Nonogram::vulrandom () {
 
 	for (int i = 0; i < hoogte; i++) {
+		int getal = randomgetal(100);
 		for (int j = 0; j < breedte; j++) {
-			nono[i][j] = 1;
+			if (getal > 1 && getal < 70) {
+				nono[i][j] = 1;
+			}
 		}
 	}
 }	
+
+void Nonogram::vullen () {
+	for (int i = 0; i < hoogte; i++) {
+		for (int j = 0; j < breedte; j++) {
+			if (this->muislocatie[0] == i && this->muislocatie[1] == j) {
+				if (nono[i][j] == 0) {
+					nono[i][j] = 1;
+				} else {
+					nono[i][j] = 0;
+				}
+			}
+		}
+	}
+}
+
+void Nonogram::verplaatshoog () {
+	this->muislocatie[0]--;
+}
+
+void Nonogram::verplaatslaag () {
+	this->muislocatie[0]++;
+}
+
+void Nonogram::verplaatslinks () {
+	this->muislocatie[1]--;
+}
+
+void Nonogram::verplaatsrechts () {
+	this->muislocatie[1]++;
+}
 
 int randomgetal (int range) {
 
@@ -246,6 +282,26 @@ int keuzemenu (Nonogram &a) {
 			case 'S':
 			case 's':
 				exit(0);
+			case 'X':
+			case 'x':
+				a.vullen();
+				break;
+			case 'I':
+			case 'i':
+				a.verplaatshoog();
+				break;
+			case 'J':
+			case 'j':
+				a.verplaatslinks();
+				break;
+			case 'K':
+			case 'k':
+				a.verplaatslaag();
+				break;
+			case 'L':
+			case 'l':
+				a.verplaatsrechts();
+				break;
 			default:
 				cout << " Ongeldige selectie, probeer opnieuw.\n";
 				break;
