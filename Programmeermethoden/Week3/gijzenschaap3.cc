@@ -20,7 +20,7 @@ const int MAX = 50;
 const int START_HOOGTE = 20;
 const int START_BREEDTE = 20;
 
-int randomgetal (int range);
+int randomgetal ();
 
 class Nonogram {
 	public:
@@ -106,8 +106,8 @@ void Nonogram::vulrandom () {
 	cin >> waarde;
 	for (int i = 0; i < hoogte; i++) {
 		for (int j = 0; j < breedte; j++) {
-			int getal = randomgetal(100);
-			if (getal < waarde) {
+			int getal = randomgetal();
+			if ((getal/10) < waarde) {
 				nono[i][j] = 1;
 			} else {
 				nono[i][j] = 0;
@@ -146,11 +146,11 @@ void Nonogram::verplaatsrechts () {
 	this->muislocatie[1]++;
 }
 
-int randomgetal (int range) {
+int randomgetal () {
 
-	static int getal = 42;
+	static int getal = 50;
 
-	getal = (221 * getal + 1) % range;
+	getal = (221 * getal + 1) % 1000;
 	// cout << getal << endl;
 	return getal;
 }
