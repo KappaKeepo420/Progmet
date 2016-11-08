@@ -101,12 +101,16 @@ void Nonogram::maakschoon () {
 }
 
 void Nonogram::vulrandom () {
-
+	cout << "Hoeveel procent wilt u gevuld hebben? (1-100)" << endl;
+	int waarde;
+	cin >> waarde;
 	for (int i = 0; i < hoogte; i++) {
-		int getal = randomgetal(100);
 		for (int j = 0; j < breedte; j++) {
-			if (getal > 1 && getal < 70) {
+			int getal = randomgetal(100);
+			if (getal < waarde) {
 				nono[i][j] = 1;
+			} else {
+				nono[i][j] = 0;
 			}
 		}
 	}
@@ -147,7 +151,7 @@ int randomgetal (int range) {
 	static int getal = 42;
 
 	getal = (221 * getal + 1) % range;
-
+	// cout << getal << endl;
 	return getal;
 }
 
@@ -266,7 +270,6 @@ int keuzemenu (Nonogram &a) {
 		keuze = getkarakter();
 
 		switch (keuze) {
-
 			case 'C':
 			case 'c':
 				a.maakschoon();
