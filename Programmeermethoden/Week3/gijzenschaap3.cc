@@ -21,6 +21,7 @@ const int START_HOOGTE = 20;
 const int START_BREEDTE = 20;
 
 int randomgetal ();
+int leesgetal (int bovengrens);
 
 class Nonogram {
 	public:
@@ -39,6 +40,7 @@ class Nonogram {
 		void setBreedte(int breedte);
 	private:
 		bool nono[MAX][MAX];
+		bool jnono[MAX][MAX];
 		int muislocatie [2];
 		int rijen[MAX][MAX];
 		int kolommen[MAX][MAX];
@@ -67,8 +69,8 @@ void Nonogram::setBreedte (int breedte) {
 }
 
 void Nonogram::drukaf () {
-	
-	if ((breedte != 0) && (hoogte != 0)) {
+	int teller = 0;
+	if ((hoogte != 0) && (breedte != 0)) {
 		for (int i = 0; i < hoogte; i++) {
 			cout << " ";
 			for (int j = 0; j < breedte; j++) {
@@ -79,13 +81,17 @@ void Nonogram::drukaf () {
 						cout << "\e[92m\u25A0\e[0m  ";
 					}
 				} else if (nono[i][j] == 1) {
+					teller++;
 					cout << "\u25A0  ";
 				} else {
 					cout << "\u25A1  ";
 				}
 			}
+			cout << "> " << teller;
+			teller = 0;
 			cout << endl;
 		}
+
 	} else {
 		cout << " Uw nonogram is leeg!" << endl;
 	}
@@ -102,15 +108,14 @@ void Nonogram::maakschoon () {
 
 void Nonogram::vulrandom () {
 	cout << "Hoeveel procent wilt u gevuld hebben? (1-100)" << endl;
-	int waarde;
-	cin >> waarde;
+	int waarde = leesgetal(100);
 	for (int i = 0; i < hoogte; i++) {
 		for (int j = 0; j < breedte; j++) {
 			int getal = randomgetal();
 			if ((getal/10) < waarde) {
-				nono[i][j] = 1;
+				jnono[i][j] = 1;
 			} else {
-				nono[i][j] = 0;
+				jnono[i][j] = 0;
 			}
 		}
 	}
@@ -279,7 +284,7 @@ int keuzemenu (Nonogram &a) {
 				a.vulrandom();
 				break;
 			case 'P':
-			case 'p': 
+			case 'p':
 				parametermenu(a);
 				break;
 			case 'S':
@@ -306,6 +311,7 @@ int keuzemenu (Nonogram &a) {
 				a.verplaatsrechts();
 				break;
 			default:
+				cout << keuze << endl;
 				cout << " Ongeldige selectie, probeer opnieuw.\n";
 				break;
 		}
