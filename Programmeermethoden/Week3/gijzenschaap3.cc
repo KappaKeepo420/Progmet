@@ -16,9 +16,10 @@
 
 using namespace std;
 
-const int MAX = 50;
+const int MAX = 30;
 const int START_HOOGTE = 20;
 const int START_BREEDTE = 20;
+const int START_RANDOM = 50;
 
 int randomgetal ();
 int leesgetal (int bovengrens);
@@ -29,47 +30,116 @@ class Nonogram {
 		void drukaf();
 		void vulrandom();
 		void maakschoon();
-		void maakbeschrijvingen();
-		void zetpercentage();
 		void vullen();
 		void verplaatshoog();
 		void verplaatslinks();
 		void verplaatsrechts();
 		void verplaatslaag();
+		void rijbeschrijving(int rij);
+		void kolombeschrijving();
 		void setHoogte(int hoogte);
 		void setBreedte(int breedte);
+		void setPercentage(int percentage);
 	private:
 		bool nono[MAX][MAX];
-		bool jnono[MAX][MAX];
+		bool oplossing[MAX][MAX];
+		int beschrijving [MAX][MAX] = {{0}};
 		int muislocatie [2];
-		int rijen[MAX][MAX];
-		int kolommen[MAX][MAX];
-		int hoogte, breedte, precentage, penstatus;
-		void maaklijnbeschrijving (bool lijn[], int ell, int beschr[]);
+		int hoogte, breedte, percentage, aryhoogte;
 };
 
 Nonogram::Nonogram () {
 
 	setHoogte(START_HOOGTE);
 	setBreedte(START_BREEDTE);
+	setPercentage(START_RANDOM);
+	maakschoon();
 }
 
 void Nonogram::setHoogte (int hoogte) {
 
 	this->hoogte = hoogte;
 	this->muislocatie[0] = hoogte / 2;
-	maakschoon();
 }
 
 void Nonogram::setBreedte (int breedte) {
 
 	this->breedte = breedte;
 	this->muislocatie[1] = breedte / 2;
-	maakschoon();
+}
+
+void Nonogram::setPercentage (int percentage) {
+
+	this->percentage = percentage;
+}
+
+void Nonogram::rijbeschrijving(int rij) {
+
+	int teller = 0, nulteller = 0;
+    int blok = 0;
+
+	for (int i = 0; i < breedte; i++) {
+		if (nono[rij][i] == 1) {
+			teller++;
+		} else if (teller != 0) {
+			cout << teller << " ";
+			rijen[rij][blok] = teller;
+			teller = 0;
+		} else {
+			nulteller++;
+		}
+		if (i == breedte-1 && teller != 0) {
+			cout << teller;
+			rijen[rij][blok] = teller;
+			blok++;
+		}
+	}
+	rijen[rij][blok] = 0;
+	if (nulteller -1 == breedte) {
+		cout << "0";
+	}
+}
+
+void Nonogram::maakkolombeschrijving() {
+
+	int num = 0, teller = 0;
+
+	for (int i = 0; i <= breedte; i++) {
+		for (int j = 0; j <= hoogte; j++) {
+			if (nono[j][i] == 1) {
+				teller++;
+			} else if (teller != 0) {
+				beschrijving[i][num] = teller;
+				teller = 0;
+				num++;
+			}
+		}
+		if (num > aryhoogte) {
+			aryhoogte = num;
+		}
+		num = 0;
+	}
+}
+
+void Nonogram::printkolombeschrijving() {
+
+	for (int j = 0; j < aryhoogte; j++) {
+		for (int i = 0; i < breedte; i++) {
+			if (beschrijving[i][j] <= 9) {
+				cout << " ";
+			}
+			if (j == 0 || beschrijving[i][j] != 0) {
+				cout << " " << beschrijving[i][j];
+			} else {
+				cout << "  ";
+			}
+		}
+		cout << endl;
+	}
 }
 
 void Nonogram::drukaf () {
-	int teller = 0;
+
 	if ((hoogte != 0) && (breedte != 0)) {
 		for (int i = 0; i < hoogte; i++) {
 			cout << " ";
@@ -81,20 +151,18 @@ void Nonogram::drukaf () {
 						cout << "\e[92m\u25A0\e[0m  ";
 					}
 				} else if (nono[i][j] == 1) {
-					teller++;
 					cout << "\u25A0  ";
 				} else {
 					cout << "\u25A1  ";
 				}
 			}
-			cout << "> " << teller;
-			teller = 0;
+			rijbeschrijving(i);
 			cout << endl;
 		}
-
 	} else {
 		cout << " Uw nonogram is leeg!" << endl;
 	}
+	kolombeschrijving();
 }
 
 void Nonogram::maakschoon () {
@@ -107,21 +175,21 @@ void Nonogram::maakschoon () {
 }
 
 void Nonogram::vulrandom () {
-	cout << "Hoeveel procent wilt u gevuld hebben? (1-100)" << endl;
-	int waarde = leesgetal(100);
+
 	for (int i = 0; i < hoogte; i++) {
 		for (int j = 0; j < breedte; j++) {
 			int getal = randomgetal();
-			if ((getal/10) < waarde) {
-				jnono[i][j] = 1;
+			if ((getal/10) < percentage) {
+				nono[i][j] = 1;
 			} else {
-				jnono[i][j] = 0;
+				nono[i][j] = 0;
 			}
 		}
 	}
 }	
 
 void Nonogram::vullen () {
+
 	for (int i = 0; i < hoogte; i++) {
 		for (int j = 0; j < breedte; j++) {
 			if (this->muislocatie[0] == i && this->muislocatie[1] == j) {
@@ -136,19 +204,35 @@ void Nonogram::vullen () {
 }
 
 void Nonogram::verplaatshoog () {
-	this->muislocatie[0]--;
+	if (this->muislocatie[0] == 0) {
+		this->muislocatie[0] = hoogte - 1;
+	} else {
+		this->muislocatie[0]--;
+	}
 }
 
 void Nonogram::verplaatslaag () {
-	this->muislocatie[0]++;
+	if (this->muislocatie[0] == hoogte - 1) {
+		this->muislocatie[0] = 0;
+	} else {
+		this->muislocatie[0]++;
+	}
 }
 
 void Nonogram::verplaatslinks () {
-	this->muislocatie[1]--;
+	if (this->muislocatie[1] == 0) {
+		this->muislocatie[1] = breedte - 1;
+	} else {
+		this->muislocatie[1]--;
+	}
 }
 
 void Nonogram::verplaatsrechts () {
-	this->muislocatie[1]++;
+	if (this->muislocatie[1] == breedte - 1) {
+		this->muislocatie[1] = 0;
+	} else {
+		this->muislocatie[1]++;
+	}
 }
 
 int randomgetal () {
@@ -156,7 +240,7 @@ int randomgetal () {
 	static int getal = 50;
 
 	getal = (221 * getal + 1) % 1000;
-	// cout << getal << endl;
+
 	return getal;
 }
 
@@ -180,7 +264,6 @@ int leesgetal (int bovengrens) {
 				cin.clear();
 				return 0;
 			}
-
 			getal = (getal * 10) + cijfer;
 		}
 		kar = cin.get();
@@ -208,53 +291,85 @@ void menu (int optie) {
 
 	if (optie == 0) { 
 		cout << " S\e[4mc\e[0mhoon | \e[4mR\e[0mandom | "
-		"\e[4mP\e[0marameters | \e[4mS\e[0mtoppen\e[0m ";
+		"\e[4mP\e[0marameters | \e[4mT\e[0moggle cursor | \e[4mS\e[0mtoppen\e[0m ";
 	}
 	if (optie == 1) {
-		cout << " \e[4mH\e[0moogte | \e[4mB\e[0mreedte | \e[4mT\e[0merug | \e[4mS\e[0mtoppen\e[0m ";
-	} 
+		cout << " \e[4mH\e[0moogte | \e[4mB\e[0mreedte | \e[4mP\e[0mercentage |";
+		cout << "  \e[4mT\e[0merug ";
+	}
 	if (optie == 2) {
-		cout << " \e[4mN\e[0monogram | \e[4mS\e[0mtoppen\e[0m ";
+		cout << " Gebruik 'ijkl' om de cursor te bewegen en '/' om te toggelen. | \e[4mT\e[0merug ";
 	}
 }
 
-int parametermenu (Nonogram &a) {
+int cursormenu (Nonogram &a) {
 
 	char keuze = '\0';
-	int hoogte = 0, breedte = 0;
 	bool stop = 0;
 
 	while (!stop) {
 
 		a.drukaf();
+		menu(2);
+		keuze = getkarakter();
 
+		switch (keuze) {
+			case '/':
+				a.vullen();
+				break;
+			case 'I': case 'i':
+				a.verplaatshoog();
+				break;
+			case 'J': case 'j':
+				a.verplaatslinks();
+				break;
+			case 'K': case 'k':
+				a.verplaatslaag();
+				break;
+			case 'L': case 'l':
+				a.verplaatsrechts();
+				break;
+			case 't': case 'T':
+				stop = 1;
+				break;
+			default:
+				cout << " Ongeldige selectie, probeer opnieuw." << endl;
+				break;
+		}
+	}
+	return 0;
+}
+
+int parametermenu (Nonogram &a) {
+
+	char keuze = '\0';
+	bool stop = 0;
+
+	while (!stop) {
+
+		a.drukaf();
 		menu(1);
 		keuze = getkarakter();
 
 		switch (keuze) {
-
-			case 'H':
-			case 'h':
+			case 'H': case 'h':
 				cout << " Kies uw hoogte: ";
-				hoogte = leesgetal(MAX);
-				a.setHoogte(hoogte);
+				a.setHoogte(leesgetal(MAX));
 				break;
-			case 'B':
-			case 'b':
+			case 'B': case 'b':
 				cout << " Kies uw breedte: ";
-				breedte = leesgetal(MAX);
-				a.setBreedte(breedte);
+				a.setBreedte(leesgetal(MAX));
 				break;
-			case 'T':
-			case 't':
+			case 'P': case 'p':
+				cout << " Voor hoeveel procent wilt u het nonogram gevuld hebben? (1-100) ";
+				a.setPercentage(leesgetal(100));
+				a.vulrandom();
+				break;
+			case 'T': case 't':
 				stop = 1;
 				break;
-			case 'S':
-			case 's':
-				exit(0);
-				break;
 			default:
-				cout << " Ongeldige selectie, probeer opnieuw.\n";
+				cout << " Ongeldige selectie, probeer opnieuw." << endl;
 				break;
 		}
 	}
@@ -269,54 +384,29 @@ int keuzemenu (Nonogram &a) {
 	while (!stop) {
 
 		a.drukaf();
-
 		menu(0);
-
 		keuze = getkarakter();
 
 		switch (keuze) {
-			case 'C':
-			case 'c':
+			case 'C': case 'c':
 				a.maakschoon();
 				break;
-			case 'R':
-			case 'r':
+			case 'R': case 'r':
 				a.vulrandom();
 				break;
-			case 'P':
-			case 'p':
+			case 'P': case 'p':
 				parametermenu(a);
 				break;
-			case 'S':
-			case 's':
+			case 'S': case 's':
 				exit(0);
-			case 'X':
-			case 'x':
-				a.vullen();
-				break;
-			case 'I':
-			case 'i':
-				a.verplaatshoog();
-				break;
-			case 'J':
-			case 'j':
-				a.verplaatslinks();
-				break;
-			case 'K':
-			case 'k':
-				a.verplaatslaag();
-				break;
-			case 'L':
-			case 'l':
-				a.verplaatsrechts();
+			case 'T': case 't':
+				cursormenu(a);
 				break;
 			default:
-				cout << keuze << endl;
-				cout << " Ongeldige selectie, probeer opnieuw.\n";
+				cout << " Ongeldige selectie, probeer opnieuw." << endl;
 				break;
 		}
 	}
-
 	return 0;
 }
 
