@@ -31,10 +31,10 @@ class Nonogram {
 		void vulrandom();
 		void maakschoon();
 		void vullen();
-		void verplaatshoog();
-		void verplaatslinks();
-		void verplaatsrechts();
-		void verplaatslaag();
+		void verplaatshoog(int func);
+		void verplaatslinks(int func);
+		void verplaatsrechts(int func);
+		void verplaatslaag(int func);
 		void rijbeschrijving(int rij);
 		void maakkolombeschrijving();
 		void printkolombeschrijving();
@@ -44,7 +44,8 @@ class Nonogram {
 	private:
 		bool nono[MAX][MAX];
 		bool oplossing[MAX][MAX];
-		int beschrijving [MAX][MAX] = {{0}};
+		int kolommen [MAX][MAX] = {{0}};
+		int rijen [MAX][MAX] = {{0}};
 		int muislocatie [2];
 		int hoogte, breedte, percentage, aryhoogte;
 };
@@ -104,13 +105,19 @@ void Nonogram::rijbeschrijving(int rij) {
 void Nonogram::maakkolombeschrijving() {
 
 	int num = 0, teller = 0;
-
-	for (int i = 0; i <= breedte; i++) {
-		for (int j = 0; j <= hoogte; j++) {
+	aryhoogte = 0;
+	
+	for (int i = 0; i < breedte; i++) {
+		for (int j = 0; j < hoogte; j++) {
 			if (nono[j][i] == 1) {
 				teller++;
 			} else if (teller != 0) {
-				beschrijving[i][num] = teller;
+				kolommen[i][num] = teller;
+				teller = 0;
+				num++;
+			}
+			if (j == hoogte - 1) {
+				kolommen[i][num] = teller;
 				teller = 0;
 				num++;
 			}
@@ -126,11 +133,11 @@ void Nonogram::printkolombeschrijving() {
 
 	for (int j = 0; j < aryhoogte; j++) {
 		for (int i = 0; i < breedte; i++) {
-			if (beschrijving[i][j] <= 9) {
+			if (kolommen[i][j] <= 9) {
 				cout << " ";
 			}
-			if (j == 0 || beschrijving[i][j] != 0) {
-				cout << " " << beschrijving[i][j];
+			if (j == 0 || kolommen[i][j] != 0) {
+				cout << " " << kolommen[i][j];
 			} else {
 				cout << "  ";
 			}
@@ -208,35 +215,55 @@ void Nonogram::vullen () {
 	}
 }
 
-void Nonogram::verplaatshoog () {
+void Nonogram::verplaatshoog (int func) {
 	if (this->muislocatie[0] == 0) {
 		this->muislocatie[0] = hoogte - 1;
 	} else {
 		this->muislocatie[0]--;
 	}
+	if (func == 1) {
+		nono[this->muislocatie[0]][this->muislocatie[1]] = 1;
+	} else if (func == 2) {
+		nono[this->muislocatie[0]][this->muislocatie[1]] = 0;
+	}
 }
 
-void Nonogram::verplaatslaag () {
+void Nonogram::verplaatslaag (int func) {
 	if (this->muislocatie[0] == hoogte - 1) {
 		this->muislocatie[0] = 0;
 	} else {
 		this->muislocatie[0]++;
 	}
+	if (func == 1) {
+		nono[this->muislocatie[0]][this->muislocatie[1]] = 1;
+	} else if (func == 2) {
+		nono[this->muislocatie[0]][this->muislocatie[1]] = 0;
+	}
 }
 
-void Nonogram::verplaatslinks () {
+void Nonogram::verplaatslinks (int func) {
 	if (this->muislocatie[1] == 0) {
 		this->muislocatie[1] = breedte - 1;
 	} else {
 		this->muislocatie[1]--;
 	}
+	if (func == 1) {
+		nono[this->muislocatie[0]][this->muislocatie[1]] = 1;
+	} else if (func == 2) {
+		nono[this->muislocatie[0]][this->muislocatie[1]] = 0;
+	}
 }
 
-void Nonogram::verplaatsrechts () {
+void Nonogram::verplaatsrechts (int func) {
 	if (this->muislocatie[1] == breedte - 1) {
 		this->muislocatie[1] = 0;
 	} else {
 		this->muislocatie[1]++;
+	}
+	if (func == 1) {
+		nono[this->muislocatie[0]][this->muislocatie[1]] = 1;
+	} else if (func == 2) {
+		nono[this->muislocatie[0]][this->muislocatie[1]] = 0;
 	}
 }
 
@@ -312,7 +339,8 @@ int cursormenu (Nonogram &a) {
 
 	char keuze = '\0';
 	bool stop = 0;
-
+	int func = 0;
+	
 	while (!stop) {
 
 		a.drukaf(0);
@@ -324,16 +352,25 @@ int cursormenu (Nonogram &a) {
 				a.vullen();
 				break;
 			case 'I': case 'i':
-				a.verplaatshoog();
+				a.verplaatshoog(func);
 				break;
 			case 'J': case 'j':
-				a.verplaatslinks();
+				a.verplaatslinks(func);
 				break;
 			case 'K': case 'k':
-				a.verplaatslaag();
+				a.verplaatslaag(func);
 				break;
 			case 'L': case 'l':
-				a.verplaatsrechts();
+				a.verplaatsrechts(func);
+				break;
+			case 'U': case 'u':
+				func = 1;
+				break;
+			case 'O': case 'o':
+				func = 2;
+				break;
+			case 'N': case 'n':
+				func = 0;
 				break;
 			case 't': case 'T':
 				stop = 1;
