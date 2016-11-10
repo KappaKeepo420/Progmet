@@ -19,7 +19,7 @@ using namespace std;
 const int MAX = 50;
 const int START_HOOGTE = 20;
 const int START_BREEDTE = 20;
-
+const int RANDOM_WAARDE = 50;
 int randomgetal ();
 int leesgetal (int bovengrens);
 
@@ -296,7 +296,7 @@ int keuzemenu (Nonogram &a) {
 				break;
 			case 'I':
 			case 'i':
-				a.verplaatshoog();
+				a.this->muislocatie[0]--;
 				break;
 			case 'J':
 			case 'j':
