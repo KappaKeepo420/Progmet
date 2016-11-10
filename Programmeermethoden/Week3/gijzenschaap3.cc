@@ -27,7 +27,7 @@ int leesgetal (int bovengrens);
 class Nonogram {
 	public:
 		Nonogram();
-		void drukaf(int beschrijven);
+		void drukaf(bool beschrijven);
 		void vulrandom();
 		void maakschoon();
 		void vullen();
@@ -35,7 +35,9 @@ class Nonogram {
 		void verplaatslinks();
 		void verplaatsrechts();
 		void verplaatslaag();
-		void rijbeschrijving(int rij);
+		void maakrijbeschrijving(int rij);
+		void printrijbeschrijving(int rij);
+		void controleerrijen(int rij);
 		void maakkolombeschrijving();
 		void printkolombeschrijving();
 		void setHoogte(int hoogte);
@@ -44,9 +46,11 @@ class Nonogram {
 	private:
 		bool nono[MAX][MAX];
 		bool oplossing[MAX][MAX];
-		int beschrijving [MAX][MAX] = {{0}};
+		int rijen[MAX][MAX] = {{0}};
+		int rijennu[MAX][MAX] = {{0}};
+		int kolommen[MAX][MAX] = {{0}};
 		int muislocatie [2];
-		int hoogte, breedte, percentage, aryhoogte;
+		int hoogte, breedte, percentage, aryhoogte, arybreedte;
 };
 
 Nonogram::Nonogram () {
@@ -74,43 +78,74 @@ void Nonogram::setPercentage (int percentage) {
 	this->percentage = percentage;
 }
 
-void Nonogram::rijbeschrijving(int rij) {
-	int rijen[hoogte][breedte];
-	int teller = 0, nulteller = 0;
-    int blok = 0;
+void Nonogram::maakrijbeschrijving(int rij) {
+
+	int num = 0, teller = 0;
+	arybreedte = 0;
 
 	for (int i = 0; i < breedte; i++) {
+
+		rijennu[rij][i] = 0;
+
 		if (nono[rij][i] == 1) {
 			teller++;
 		} else if (teller != 0) {
-			cout << teller << " ";
-			rijen[rij][blok] = teller;
+			rijennu[rij][num] = teller;
 			teller = 0;
-		} else {
-			nulteller++;
+			num++;
 		}
-		if (i == breedte-1 && teller != 0) {
-			cout << teller;
-			rijen[rij][blok] = teller;
-			blok++;
+		if (i == breedte - 1) {
+			rijennu[rij][num] = teller;
+			num++;
 		}
 	}
-	rijen[rij][blok] = 0;
-	if (nulteller -1 == breedte) {
-		cout << "0";
+	if (num > arybreedte) {
+		arybreedte = num;
+	}
+}
+
+void Nonogram::controleerrijen(int rij) {
+
+	for (int i = 0; i < breedte; i++) {
+		rijen[rij][i] = rijennu[rij][i];
+	}
+}
+
+void Nonogram::printrijbeschrijving(int rij) {
+
+	int teller = 0;
+	
+	for (int i = 0; i < breedte; i++) {
+		if (i == 0 || rijen[rij][i] != 0) {
+			cout << rijen[rij][i] << " ";
+		}
+		if (rijen[rij][i] == rijennu[rij][i]) {
+			teller++;
+		}
+	}
+	if (teller == breedte) {
+		cout << "\u2713";
 	}
 }
 
 void Nonogram::maakkolombeschrijving() {
 
 	int num = 0, teller = 0;
+	aryhoogte = 0;
 
-	for (int i = 0; i <= breedte; i++) {
-		for (int j = 0; j <= hoogte; j++) {
+	for (int i = 0; i < breedte; i++) {
+		for (int j = 0; j < hoogte; j++) {
+			kolommen[i][j] = 0;
+
 			if (nono[j][i] == 1) {
 				teller++;
 			} else if (teller != 0) {
-				beschrijving[i][num] = teller;
+				kolommen[i][num] = teller;
+				teller = 0;
+				num++;
+			}
+			if (j == hoogte - 1) {
+				kolommen[i][num] = teller;
 				teller = 0;
 				num++;
 			}
@@ -119,6 +154,7 @@ void Nonogram::maakkolombeschrijving() {
 			aryhoogte = num;
 		}
 		num = 0;
+
 	}
 }
 
@@ -126,11 +162,11 @@ void Nonogram::printkolombeschrijving() {
 
 	for (int j = 0; j < aryhoogte; j++) {
 		for (int i = 0; i < breedte; i++) {
-			if (beschrijving[i][j] <= 9) {
+			if (kolommen[i][j] <= 9) {
 				cout << " ";
 			}
-			if (j == 0 || beschrijving[i][j] != 0) {
-				cout << " " << beschrijving[i][j];
+			if (j == 0 || kolommen[i][j] != 0) {
+				cout << " " << kolommen[i][j];
 			} else {
 				cout << "  ";
 			}
@@ -139,7 +175,7 @@ void Nonogram::printkolombeschrijving() {
 	}
 }
 
-void Nonogram::drukaf (int beschrijven) {
+void Nonogram::drukaf (bool beschrijven) {
 
 	if ((hoogte != 0) && (breedte != 0)) {
 		for (int i = 0; i < hoogte; i++) {
@@ -157,17 +193,22 @@ void Nonogram::drukaf (int beschrijven) {
 					cout << "\u25A1  ";
 				}
 			}
-			rijbeschrijving(i);
+			if (beschrijven){
+				controleerrijen(i);
+			}
+			maakrijbeschrijving(i);
+			printrijbeschrijving(i);
 			cout << endl;
 		}
 	} else {
 		cout << " Uw nonogram is leeg!" << endl;
 	}
-	if (beschrijven == 1) {
+	if (beschrijven) {
 		maakkolombeschrijving();
-		beschrijven = 0;
 	}
 	printkolombeschrijving();
+
+	beschrijven = 0;
 }
 
 void Nonogram::maakschoon () {
@@ -198,11 +239,7 @@ void Nonogram::vullen () {
 	for (int i = 0; i < hoogte; i++) {
 		for (int j = 0; j < breedte; j++) {
 			if (this->muislocatie[0] == i && this->muislocatie[1] == j) {
-				if (nono[i][j] == 0) {
-					nono[i][j] = 1;
-				} else {
-					nono[i][j] = 0;
-				}
+				nono[i][j] = !nono[i][j];
 			}
 		}
 	}
@@ -440,7 +477,7 @@ void welkommenu() {
 	cout << " cursor te bewegen.\n" << endl;
 	cout << " -> Gebruik het menu door de onderstreepte letter gevolgd door" << endl;
 	cout << " een enter in te toetsen.\n" << endl;
-	cout << " -> Toggle een vakje door een x in te toetsen gevolgd door een enter.\n" << endl;
+	cout << " -> Toggle een vakje door een / in te toetsen gevolgd door een enter.\n" << endl;
 }
 
 int main() {
@@ -448,7 +485,7 @@ int main() {
 	welkommenu();
 
 	Nonogram a = Nonogram();
-	a.drukaf(0);
+	a.drukaf(1);
 	keuzemenu(a);
 
 	return 1;
