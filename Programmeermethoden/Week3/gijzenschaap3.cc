@@ -54,7 +54,7 @@ class Nonogram {
 		int vink[MAX] = {0};
 		int aryhoogteary[MAX] = {0};
 		int muislocatie [2];
-		int hoogte, breedte, percentage, aryhoogte, arybreedte;
+		int hoogte, breedte, percentage, aryhoogte;
 };
 
 Nonogram::Nonogram () {
@@ -85,7 +85,6 @@ void Nonogram::setPercentage (int percentage) {
 void Nonogram::maakrijbeschrijving(int rij) {
 
 	int num = 0, teller = 0;
-	arybreedte = 0;
 
 	for (int i = 0; i < breedte; i++) {
 
@@ -102,9 +101,6 @@ void Nonogram::maakrijbeschrijving(int rij) {
 			rijennu[rij][num] = teller;
 			num++;
 		}
-	}
-	if (num > arybreedte) {
-		arybreedte = num;
 	}
 }
 
@@ -543,7 +539,9 @@ int main() {
 	welkommenu();
 
 	Nonogram a = Nonogram();
+
 	a.drukaf(1);
+
 	keuzemenu(a);
 
 	return 1;
