@@ -150,7 +150,6 @@ void Nonogram::maakkolombeschrijving() {
 				teller = 0;
 				num++;
 			}
-			aryhoogteary[j] = num;
 		}
 		if (num > aryhoogte) {
 			aryhoogte = num;
@@ -162,7 +161,6 @@ void Nonogram::maakkolombeschrijving() {
 
 void Nonogram::printkolombeschrijving() {
 
-	int teller = 0;
 	for (int j = 0; j < aryhoogte; j++) {
 		for (int i = 0; i < breedte; i++) {
 			if (kolommennu[i][j] == kolommen[i][j]) {
@@ -177,10 +175,10 @@ void Nonogram::printkolombeschrijving() {
 				cout << "  ";
 			}
 		}
+		cout << endl;
 	}
-	cout << endl;
 	for (int i = 0; i < breedte; i++) {
-		if (vink[i]) {
+		if (vink[i] == 1) {
 			cout << " \u2713";
 		} else {
 			cout << "  ";
