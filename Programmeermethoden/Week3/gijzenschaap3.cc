@@ -142,7 +142,6 @@ void Nonogram::inlezen () {
 				} else if (dieptek == langstedieptek) {
 					aryhoogtenieuw--;
 				}
-				cout << aryhoogtenieuw << " " << langstedieptek << " " << dieptek << " | ";
 				langstedieptek = dieptek;
 				this->kolommen[dieptek][j] = getal;
 				j++;
@@ -156,10 +155,10 @@ void Nonogram::inlezen () {
 void Nonogram::uitlezenbeschrijving() {
 
 	ofstream uitvoer;
-	int beshoogte = 0, besbreedte = 0;
+	int beshoogte = 0, besbreedte = 0, nulteller = 0;
 	int beschrijfgetalh[MAX][MAX] = {{0}};
 	int beschrijfgetalb[MAX][MAX] = {{0}};
-
+	char beshoogtek, besbreedtek, beschrijfgetalbk, beschrijfgetalhk;
 	uitvoer.open("output.cc");
 
 	if (uitvoer.fail()) {
@@ -179,10 +178,45 @@ void Nonogram::uitlezenbeschrijving() {
 		}
 		besbreedte++;
 	}
-	uitvoer.put(beshoogte);
+
+	beshoogtek = beshoogte + '0';
+	besbreedtek = besbreedte + '0';
+	uitvoer.put(beshoogtek);
 	uitvoer.put(' ');
-	uitvoer.put(besbreedte);
+	uitvoer.put(besbreedtek);
 	uitvoer.put('\n');
+
+	for (int i = 0; i < hoogte; i++) {
+		for (int j = 0; j < aryhoogte; j++) {
+			beschrijfgetalb[i][j] = this->rijen[i][j];
+			beschrijfgetalbk = beschrijfgetalb[i][j] + '0';
+			if (beschrijfgetalb[i][j] == 0) {
+				nulteller++;
+			}
+			if (nulteller < 2) {
+				uitvoer.put(beschrijfgetalbk);
+				uitvoer.put(' ');
+			}
+		}
+		nulteller = 0;
+		uitvoer.put('\n');
+	}
+
+	for (int i = 0; i < breedte; i++) {
+		for (int j = 0; j < hoogte; j++) {
+			beschrijfgetalh[i][j] = this->kolommen[i][j];
+			beschrijfgetalhk = beschrijfgetalh[i][j] + '0';
+			if (beschrijfgetalh[i][j] == 0) {
+				nulteller++;
+			}
+			if (nulteller < 2) {
+				uitvoer.put(beschrijfgetalhk);
+				uitvoer.put(' ');
+			}
+		}
+		nulteller = 0;
+		uitvoer.put('\n');
+	}
 }
 
 void Nonogram::maakrijbeschrijving(int rij) {
@@ -624,6 +658,9 @@ int keuzemenu (Nonogram &a) {
 				break;
 			case 'B': case 'b':
 				a.drukaf(1);
+				break;
+			case 'U': case 'u':
+				a.uitlezenbeschrijving();
 				break;
 			default:
 				cout << " Ongeldige selectie, probeer opnieuw." << endl;
