@@ -114,7 +114,8 @@ void Nonogram::inlezen () {
 	while (!invoer.eof()) {
 
 		invoer.get(kar);
-
+		invoer >> hoogte
+		invoer >> breedte
 		if (kar == '\n') {
 			diepte++;
 			j = 0;
@@ -178,9 +179,10 @@ void Nonogram::uitlezenbeschrijving() {
 
 void Nonogram::uitlezenbeschrijvingbreedte(ofstream &uitvoer) {
 
+	char besbreedte, beschrijfgetalbk;
 	int beschrijfgetalb[MAX][MAX] = {{0}};
 	int nulteller = 0;
-	char besbreedte, beschrijfgetalbk;
+
 	for (int i = 0; i < hoogte; i++) {
 		for (int j = 0; j < aryhoogte; j++) {
 			beschrijfgetalb[i][j] = this->rijen[i][j];
@@ -205,6 +207,7 @@ void Nonogram:: uitlezenbeschrijvinghoogte(ofstream &uitvoer) {
 	char beshoogte, beschrijfgetalhk;
 	int beschrijfgetalh[MAX][MAX] = {{0}};
 	int nulteller = 0;
+
 	for (int i = 0; i < breedte; i++) {
 		for (int j = 0; j < hoogte; j++) {
 			beschrijfgetalh[i][j] = this->kolommen[i][j];
