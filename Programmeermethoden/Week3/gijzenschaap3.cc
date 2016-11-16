@@ -32,6 +32,8 @@ class Nonogram {
 		void vullen();
 		void inlezen();
 		void uitlezenbeschrijving();
+		void uitlezenbeschrijvingbreedte(ofstream &uitvoer);
+		void uitlezenbeschrijvinghoogte(ofstream &uitvoer);
 		void maakrijbeschrijving(int rij);
 		void printrijbeschrijving(int rij);
 		void controleerrijen(int rij);
@@ -155,37 +157,30 @@ void Nonogram::inlezen () {
 void Nonogram::uitlezenbeschrijving() {
 
 	ofstream uitvoer;
-	int beshoogte = 0, besbreedte = 0, nulteller = 0;
-	int beschrijfgetalh[MAX][MAX] = {{0}};
-	int beschrijfgetalb[MAX][MAX] = {{0}};
-	char beshoogtek, besbreedtek, beschrijfgetalbk, beschrijfgetalhk;
+	int nulteller = 0;
+	char beshoogte, besbreedte, beschrijfgetalbk, beschrijfgetalhk;
 	uitvoer.open("output.cc");
 
 	if (uitvoer.fail()) {
 		cout << "output.cc kan niet worden gemaakt." << endl;
 	}
 
-	for (int i = 0; i < hoogte; i++) {
-		for (int j = 0; j < breedte; j++) {
-			beschrijfgetalb[i][j] = this->rijen[i][j];
-		}
-		beshoogte++;
-	}
-
-	for (int i = 0; i < breedte; i++) {
-		for (int j = 0; j < hoogte; j++) {
-			beschrijfgetalh[i][j] = this->kolommen[i][j];
-		}
-		besbreedte++;
-	}
-
-	beshoogtek = beshoogte + '0';
-	besbreedtek = besbreedte + '0';
-	uitvoer.put(beshoogtek);
+	beshoogte = hoogte + '0';
+	besbreedte = breedte + '0';
+	uitvoer.put(beshoogte);
 	uitvoer.put(' ');
-	uitvoer.put(besbreedtek);
+	uitvoer.put(besbreedte);
 	uitvoer.put('\n');
 
+	uitlezenbeschrijvingbreedte(uitvoer);
+	uitlezenbeschrijvinghoogte(uitvoer);
+}
+
+void Nonogram::uitlezenbeschrijvingbreedte(ofstream &uitvoer) {
+
+	int beschrijfgetalb[MAX][MAX] = {{0}};
+	int nulteller = 0;
+	char besbreedte, beschrijfgetalbk;
 	for (int i = 0; i < hoogte; i++) {
 		for (int j = 0; j < aryhoogte; j++) {
 			beschrijfgetalb[i][j] = this->rijen[i][j];
@@ -195,13 +190,21 @@ void Nonogram::uitlezenbeschrijving() {
 			}
 			if (nulteller < 2) {
 				uitvoer.put(beschrijfgetalbk);
-				uitvoer.put(' ');
+				if (nulteller == 0) {
+					uitvoer.put(' ');
+				}
 			}
 		}
 		nulteller = 0;
 		uitvoer.put('\n');
 	}
+}
 
+void Nonogram:: uitlezenbeschrijvinghoogte(ofstream &uitvoer) {
+
+	char beshoogte, beschrijfgetalhk;
+	int beschrijfgetalh[MAX][MAX] = {{0}};
+	int nulteller = 0;
 	for (int i = 0; i < breedte; i++) {
 		for (int j = 0; j < hoogte; j++) {
 			beschrijfgetalh[i][j] = this->kolommen[i][j];
@@ -211,7 +214,9 @@ void Nonogram::uitlezenbeschrijving() {
 			}
 			if (nulteller < 2) {
 				uitvoer.put(beschrijfgetalhk);
-				uitvoer.put(' ');
+				if (nulteller == 0) {
+					uitvoer.put(' ');
+				}
 			}
 		}
 		nulteller = 0;
