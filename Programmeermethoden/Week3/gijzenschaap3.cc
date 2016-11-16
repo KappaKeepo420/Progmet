@@ -31,6 +31,7 @@ class Nonogram {
 		void maakschoon();
 		void vullen();
 		void inlezen();
+		void uitlezenbeschrijving();
 		void maakrijbeschrijving(int rij);
 		void printrijbeschrijving(int rij);
 		void controleerrijen(int rij);
@@ -150,6 +151,38 @@ void Nonogram::inlezen () {
 	}
 	drukaf(0);
 	invoer.close();
+}
+
+void Nonogram::uitlezenbeschrijving() {
+
+	ofstream uitvoer;
+	int beshoogte = 0, besbreedte = 0;
+	int beschrijfgetalh[MAX][MAX] = {{0}};
+	int beschrijfgetalb[MAX][MAX] = {{0}};
+
+	uitvoer.open("output.cc");
+
+	if (uitvoer.fail()) {
+		cout << "output.cc kan niet worden gemaakt." << endl;
+	}
+
+	for (int i = 0; i < hoogte; i++) {
+		for (int j = 0; j < breedte; j++) {
+			beschrijfgetalb[i][j] = this->rijen[i][j];
+		}
+		beshoogte++;
+	}
+
+	for (int i = 0; i < breedte; i++) {
+		for (int j = 0; j < hoogte; j++) {
+			beschrijfgetalh[i][j] = this->kolommen[i][j];
+		}
+		besbreedte++;
+	}
+	uitvoer.put(beshoogte);
+	uitvoer.put(' ');
+	uitvoer.put(besbreedte);
+	uitvoer.put('\n');
 }
 
 void Nonogram::maakrijbeschrijving(int rij) {
