@@ -101,6 +101,7 @@ void Nonogram::printinlezenbeschrijving () {
 	while (!file) {
 		cout << " Welke file wilt u openen? ";
 		cin >> filenaam;
+		cin.ignore();
 
 		invoer.open (filenaam.c_str());
 
@@ -265,6 +266,7 @@ void Nonogram::printinlezenbeeld() {
 	while (!file) {
 		cout << " Welke file wilt u openen? ";
 		cin >> filenaam;
+		cin.ignore();
 
 		invoer.open (filenaam.c_str());
 
