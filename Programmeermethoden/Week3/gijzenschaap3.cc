@@ -30,7 +30,8 @@ class Nonogram {
 		void vulrandom();
 		void maakschoon();
 		void vullen();
-		void inlezen();
+		void printinlezenbeschrijving();
+		void inlezenbeschrijving(ifstream &invoer);
 		void uitlezenbeschrijving();
 		void uitlezenbeschrijvingbreedte(ofstream &uitvoer);
 		void uitlezenbeschrijvinghoogte(ofstream &uitvoer);
@@ -87,15 +88,11 @@ void Nonogram::setPercentage (int percentage) {
 	this->percentage = percentage;
 }
 
-void Nonogram::inlezen () {
+void Nonogram::printinlezenbeschrijving () {
 
 	ifstream invoer;
 	string filenaam;
 	bool file = 0;
-	int i = 0, j = 0, cijfer = 0, getal = 0, diepte = -1, dieptek = 0, langstedieptek = 0;
-	int teller = 0, hteller = 0, bteller = 0;
-	char kar;
-	aryhoogtenieuw = 0;
 	maakschoon();
 
 	while (!file) {
@@ -110,49 +107,61 @@ void Nonogram::inlezen () {
 			file = 1;
 		}
 	}
+	inlezenbeschrijving(invoer);
+	drukaf(0);
+	invoer.close();
+}
 
+void Nonogram::inlezenbeschrijving(ifstream &invoer) {
+
+	int diepte = 0, dieptek = 0, i = 0, j = 0, getal, nulteller = 1, hoogstearray = 0;
+	bool hoogtebreedte = 0, rijenbeschrijving = 0, endline = 0;
 	while (!invoer.eof()) {
 
-		invoer.get(kar);
-		invoer >> hoogte
-		invoer >> breedte
-		if (kar == '\n') {
+		if (!hoogtebreedte) {
+			invoer >> hoogte;
+			invoer >> breedte;
+			setHoogte(hoogte);
+			setBreedte(breedte);
+			hoogtebreedte = 1;
+		}
+		nulteller = getal;
+		invoer >> getal;
+		if (nulteller == 0 && getal == 0) {
+			endline = 1;
+		}
+		if (getal == 0 && !endline) {
 			diepte++;
-			j = 0;
 			i = 0;
+			j = 0;
 		}
-		if (kar > '0' && kar <= '9') {
-			cijfer = kar - 48;
-			getal = (getal * 10) + cijfer;
-			teller++;
-		} else {
-			getal = 0;
-		}
-		if (getal != 0) {
-			if (teller == 1) {
-				setHoogte(getal);
-				hteller = getal;
-			} else if (teller == 2) {
-				setBreedte(getal);
-				bteller = getal;
-			} else if (diepte >= 0 && diepte < hteller) {
+		if (getal != 0 || endline) {
+			if (!rijenbeschrijving && diepte < hoogte) {
 				this->rijen[diepte][i] = getal;
 				i++;
-			} else if (diepte >= hteller && dieptek < bteller) {
-				dieptek = diepte - hteller;
-				if (dieptek > langstedieptek) {
-					aryhoogtenieuw++;
-				} else if (dieptek == langstedieptek) {
-					aryhoogtenieuw--;
+				if (diepte == hoogte) {
+					rijenbeschrijving = 1;
 				}
-				langstedieptek = dieptek;
+			}
+			if (diepte >= hoogte) {
+				dieptek = diepte - hoogte;
 				this->kolommen[dieptek][j] = getal;
 				j++;
 			}
+			if (j > hoogstearray) {
+				hoogstearray = j;
+			}
+			dieptek = hoogstearray;
+
 		}
+		if (endline) {
+			diepte++;
+			i = 0;
+			j = 0;
+		}
+		endline = 0;
 	}
-	drukaf(0);
-	invoer.close();
+	aryhoogtenieuw = hoogstearray;
 }
 
 void Nonogram::uitlezenbeschrijving() {
@@ -166,12 +175,7 @@ void Nonogram::uitlezenbeschrijving() {
 		cout << "output.cc kan niet worden gemaakt." << endl;
 	}
 
-	beshoogte = hoogte + '0';
-	besbreedte = breedte + '0';
-	uitvoer.put(beshoogte);
-	uitvoer.put(' ');
-	uitvoer.put(besbreedte);
-	uitvoer.put('\n');
+	uitvoer << hoogte << " " << breedte << endl;
 
 	uitlezenbeschrijvingbreedte(uitvoer);
 	uitlezenbeschrijvinghoogte(uitvoer);
@@ -179,51 +183,43 @@ void Nonogram::uitlezenbeschrijving() {
 
 void Nonogram::uitlezenbeschrijvingbreedte(ofstream &uitvoer) {
 
-	char besbreedte, beschrijfgetalbk;
-	int beschrijfgetalb[MAX][MAX] = {{0}};
 	int nulteller = 0;
 
 	for (int i = 0; i < hoogte; i++) {
 		for (int j = 0; j < aryhoogte; j++) {
-			beschrijfgetalb[i][j] = this->rijen[i][j];
-			beschrijfgetalbk = beschrijfgetalb[i][j] + '0';
-			if (beschrijfgetalb[i][j] == 0) {
+			if (this->rijen[i][j] == 0) {
 				nulteller++;
 			}
 			if (nulteller < 2) {
-				uitvoer.put(beschrijfgetalbk);
+				uitvoer << this->rijen[i][j];
 				if (nulteller == 0) {
-					uitvoer.put(' ');
+					uitvoer << " ";
 				}
 			}
 		}
 		nulteller = 0;
-		uitvoer.put('\n');
+		uitvoer << endl;
 	}
 }
 
 void Nonogram:: uitlezenbeschrijvinghoogte(ofstream &uitvoer) {
 
-	char beshoogte, beschrijfgetalhk;
-	int beschrijfgetalh[MAX][MAX] = {{0}};
 	int nulteller = 0;
 
 	for (int i = 0; i < breedte; i++) {
 		for (int j = 0; j < hoogte; j++) {
-			beschrijfgetalh[i][j] = this->kolommen[i][j];
-			beschrijfgetalhk = beschrijfgetalh[i][j] + '0';
-			if (beschrijfgetalh[i][j] == 0) {
+			if (this->kolommen[i][j] == 0) {
 				nulteller++;
 			}
 			if (nulteller < 2) {
-				uitvoer.put(beschrijfgetalhk);
+				uitvoer << this->kolommen[i][j];
 				if (nulteller == 0) {
-					uitvoer.put(' ');
+					uitvoer << " ";
 				}
 			}
 		}
 		nulteller = 0;
-		uitvoer.put('\n');
+		uitvoer << endl;
 	}
 }
 
@@ -662,7 +658,7 @@ int keuzemenu (Nonogram &a) {
 				a.drukaf(0);
 				break;
 			case 'I': case 'i':
-				a.inlezen();
+				a.printinlezenbeschrijving();
 				break;
 			case 'B': case 'b':
 				a.drukaf(1);
