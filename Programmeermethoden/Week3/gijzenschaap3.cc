@@ -219,7 +219,9 @@ void Nonogram:: uitlezenbeschrijvinghoogte(ofstream &uitvoer) {
 			}
 		}
 		nulteller = 0;
-		uitvoer << endl;
+		if (i != breedte - 1) {
+			uitvoer << endl;
+		}
 	}
 }
 
