@@ -35,6 +35,9 @@ class Nonogram {
 		void uitlezenbeschrijving();
 		void uitlezenbeschrijvingbreedte(ofstream &uitvoer);
 		void uitlezenbeschrijvinghoogte(ofstream &uitvoer);
+		void uitlezenbeeld();
+		void printinlezenbeeld();
+		void inlezenbeeld(ifstream &invoer);
 		void maakrijbeschrijving(int rij);
 		void printrijbeschrijving(int rij);
 		void controleerrijen(int rij);
@@ -169,10 +172,10 @@ void Nonogram::uitlezenbeschrijving() {
 	ofstream uitvoer;
 	int nulteller = 0;
 	char beshoogte, besbreedte, beschrijfgetalbk, beschrijfgetalhk;
-	uitvoer.open("output.cc");
+	uitvoer.open("outputbeschrijving.cc");
 
 	if (uitvoer.fail()) {
-		cout << "output.cc kan niet worden gemaakt." << endl;
+		cout << "outputbeschrijving.cc kan niet worden gemaakt." << endl;
 	}
 
 	uitvoer << hoogte << " " << breedte << endl;
@@ -202,7 +205,7 @@ void Nonogram::uitlezenbeschrijvingbreedte(ofstream &uitvoer) {
 	}
 }
 
-void Nonogram:: uitlezenbeschrijvinghoogte(ofstream &uitvoer) {
+void Nonogram::uitlezenbeschrijvinghoogte(ofstream &uitvoer) {
 
 	int nulteller = 0;
 
@@ -223,6 +226,81 @@ void Nonogram:: uitlezenbeschrijvinghoogte(ofstream &uitvoer) {
 			uitvoer << endl;
 		}
 	}
+}
+
+void Nonogram::uitlezenbeeld() {
+
+	ofstream uitvoer;
+
+	uitvoer.open("outputbeschrijving.cc");
+	if (uitvoer.fail()) {
+		cout << "outputbeeld.cc kan niet worden gemaakt." << endl;
+	}
+
+	uitvoer << hoogte << " " << breedte << endl;
+
+	for (int i = 0; i < hoogte; i++) {
+		for (int j = 0; j < breedte; j++) {
+			if (nono[i][j] == 1) {
+				uitvoer << "1";
+			} else if (nono[i][j] == 0) {
+				uitvoer << "0";
+			}
+			if (i != hoogte - 1) {
+				if (j == breedte - 1) {
+					uitvoer << endl;
+				}
+			}
+		}
+	}
+}
+
+void Nonogram::printinlezenbeeld() {
+
+	ifstream invoer;
+	string filenaam;
+	bool file = 0;
+	maakschoon();
+
+	while (!file) {
+		cout << " Welke file wilt u openen? ";
+		cin >> filenaam;
+
+		invoer.open (filenaam.c_str());
+
+		if (invoer.fail()) {
+			cout << filenaam << " kan niet worden geopend." << endl;
+		} else {
+			file = 1;
+		}
+	}
+
+	inlezenbeeld(invoer);
+}
+
+void Nonogram::inlezenbeeld(ifstream &invoer) {
+
+	bool hoogtebreedte = 0, eenkeer = 0;
+	char waarde;
+
+	if (!hoogtebreedte) {
+		invoer >> hoogte;
+		invoer >> breedte;
+		setHoogte(hoogte);
+		setBreedte(breedte);
+		hoogtebreedte = 1;
+	}
+	for (int i = 0; i < hoogte; i++) {
+		for (int j = 0; j < breedte; j++) {
+			invoer >> waarde;
+			if (waarde == '1') {
+				nono[i][j] = 1;
+			} else {
+				nono[i][j] = 0;
+			}
+		}
+	}
+	drukaf(0);
 }
 
 void Nonogram::maakrijbeschrijving(int rij) {
@@ -580,7 +658,7 @@ int cursormenu (Nonogram &a) {
 			case 'N': case 'n':
 				func = 0;
 				break;
-			case 't': case 'T':
+			case 'T': case 't':
 				stop = 1;
 				break;
 			default:
@@ -667,6 +745,12 @@ int keuzemenu (Nonogram &a) {
 				break;
 			case 'U': case 'u':
 				a.uitlezenbeschrijving();
+				break;
+			case 'J': case 'j':
+				a.uitlezenbeeld();
+				break;
+			case 'K': case 'k':
+				a.printinlezenbeeld();
 				break;
 			default:
 				cout << " Ongeldige selectie, probeer opnieuw." << endl;
