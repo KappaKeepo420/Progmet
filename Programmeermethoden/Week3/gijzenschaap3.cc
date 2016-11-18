@@ -364,6 +364,7 @@ void Nonogram::clearbeschrijvingen() {
 			kolommen[i][j] = 0;
 		}
 	}
+	aryhoogtenieuw = 1;
 }
 /* 	Maakt de huidige rijbeschrijving in een 2d-array. Deze wordt geprint als de gebruiker
 	de beschrijvingen reset door de printrijbeschrijving functie. */
