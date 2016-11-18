@@ -554,6 +554,7 @@ void Nonogram::drukaf (bool beschrijven) {
 }
 
 /* Maakt het huidige beeld leeg. */
+
 void Nonogram::maakschoon () {
 
 	for (int i = 0; i < hoogte; i++) {
@@ -562,6 +563,8 @@ void Nonogram::maakschoon () {
 		}
 	}
 }
+
+/* Vult het nonogram willekeurig met het gekozen percentage. */
 
 void Nonogram::vulrandom () {
 
@@ -577,6 +580,7 @@ void Nonogram::vulrandom () {
 	}
 }	
 
+/* Vult een vakje in als deze nog niet is ingevuld en maakt deze leeg als deze wel is ingevuld. */
 void Nonogram::vullen () {
 
 	for (int i = 0; i < hoogte; i++) {
