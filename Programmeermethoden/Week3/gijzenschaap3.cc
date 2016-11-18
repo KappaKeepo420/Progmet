@@ -1,8 +1,8 @@
 /*	Auteurs 		- Jort Gijzen		1874233
 					- Lennard Schaap	1914839
 	Studie			- BSc Informatica
-	Compiler		- G++
-	Datum 			- 
+	Compiler		- g++ -std=c++11
+	Datum 			- 18 november 2016
 	Opdracht		- Nonogram
 	
 	Dit programma stelt de gebruiker in staat om een Nonogram te maken en op te lossen
