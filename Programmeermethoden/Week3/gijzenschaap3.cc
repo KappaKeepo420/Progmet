@@ -592,6 +592,9 @@ void Nonogram::vullen () {
 	}
 }
 
+/*	Verplaatst de cursor omhoog. Heeft als parameter of alle vakjes gevuld of geleegd moeten
+	worden of niet verandert. Plaatst de cursor aan de andere kant als de gebruiker van het
+	nonogram beweegt. */
 void Nonogram::verplaatshoog (int func) {
 	if (this->muislocatie[0] == 0) {
 		this->muislocatie[0] = hoogte - 1;
@@ -605,6 +608,7 @@ void Nonogram::verplaatshoog (int func) {
 	}
 }
 
+/*	Verplaatst de cursor naar beneden, zelfde parameters als bij de andere verplaatsfuncties. */
 void Nonogram::verplaatslaag (int func) {
 	if (this->muislocatie[0] == hoogte - 1) {
 		this->muislocatie[0] = 0;
@@ -618,6 +622,7 @@ void Nonogram::verplaatslaag (int func) {
 	}
 }
 
+/*	Verplaatst de cursor links, zelfde parameters als bij de andere verplaatsfuncties. */
 void Nonogram::verplaatslinks (int func) {
 	if (this->muislocatie[1] == 0) {
 		this->muislocatie[1] = breedte - 1;
@@ -631,6 +636,7 @@ void Nonogram::verplaatslinks (int func) {
 	}
 }
 
+/*	Verplaatst de cursor rechts, zelfde parameters als bij de andere verplaatsfuncties. */
 void Nonogram::verplaatsrechts (int func) {
 	if (this->muislocatie[1] == breedte - 1) {
 		this->muislocatie[1] = 0;
@@ -644,6 +650,7 @@ void Nonogram::verplaatsrechts (int func) {
 	}
 }
 
+/* De gegeven randomfunctie. */
 int randomgetal () {
 
 	static int getal = 50;
@@ -653,6 +660,8 @@ int randomgetal () {
 	return getal;
 }
 
+/*	Leest een getal karakter voor karakter in met cin.get(). Heeft als parameter de
+	maximale waarde van het getal. */
 int leesgetal (int bovengrens) {
 
 	int cijfer = 0, getal = 0;
@@ -685,6 +694,8 @@ int leesgetal (int bovengrens) {
 	return getal;
 }
 
+/* Leest een karakter in met cin.get(). */
+
 char getkarakter () {
 
 	char keuze;
@@ -696,6 +707,7 @@ char getkarakter () {
 	return keuze;
 }
 
+/* De menu-opties die gebruikt kunnen worden door de menufuncties. */
 void menu (int optie) {
 
 	if (optie == 0) { 
@@ -714,6 +726,8 @@ void menu (int optie) {
 		cout << " 'o' om te laten legen en 'n' voor de normale muis. | \e[4mT\e[0merug ";
 	}
 }
+
+/* Het cursormenu met de bijbehorende opties. */
 
 int cursormenu (Nonogram &a) {
 
@@ -763,6 +777,7 @@ int cursormenu (Nonogram &a) {
 	return 0;
 }
 
+/* Het parametermenu met de bijbehorende opties. */
 int parametermenu (Nonogram &a) {
 
 	char keuze = '\0';
@@ -802,6 +817,8 @@ int parametermenu (Nonogram &a) {
 	}
 	return 0;
 }
+
+/* Het hoofdmenu met de bijbehorende opties. */
 
 int keuzemenu (Nonogram &a) {
 
@@ -858,6 +875,8 @@ int keuzemenu (Nonogram &a) {
 	return 0;
 }
 
+/* Het welkomstmenu met instructies. */
+
 void welkommenu() {
 
 	cout << " ------------------------------------------------------------" << endl;
@@ -879,6 +898,7 @@ void welkommenu() {
 	cout << " -> Toggle een vakje door een / in te toetsen gevolgd door een enter.\n" << endl;
 }
 
+/* De main functie die het nonogram aanmaakt en het programma start. */
 int main() {
 
 	welkommenu();
