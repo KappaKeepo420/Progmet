@@ -4,7 +4,9 @@
 	Compiler		- G++
 	Datum 			- 
 	Opdracht		- Nonogram
-	-- Uitleg
+	
+	Dit programma stelt de gebruiker in staat om een Nonogram te maken en op te lossen
+	via een menu-systeem.
 */
 
 #include <iostream> 
@@ -15,13 +17,19 @@
 
 using namespace std;
 
+/* Deze constanten kunnen aangepast worden naar keuze */ 
+
 const int MAX = 30;
 const int START_HOOGTE = 20;
 const int START_BREEDTE = 20;
 const int START_RANDOM = 50;
 
+/* Declaraties van functies die gebruikt worden door de klasse Nonogram. */
+
 int randomgetal ();
 int leesgetal (int bovengrens);
+
+/*	Declaraties van de Nonogram-memberfuncties en variabelen. */
 
 class Nonogram {
 	public:
@@ -38,6 +46,7 @@ class Nonogram {
 		void uitlezenbeeld();
 		void printinlezenbeeld();
 		void inlezenbeeld(ifstream &invoer);
+		void clearbeschrijvingen();
 		void maakrijbeschrijving(int rij);
 		void printrijbeschrijving(int rij);
 		void controleerrijen(int rij);
@@ -66,6 +75,8 @@ class Nonogram {
 		int aryhoogtenieuw = 1;
 };
 
+/* Default constructor, deze functies worden aangeroepen als het object word aangemaakt. */
+
 Nonogram::Nonogram () {
 
 	setHoogte(START_HOOGTE);
@@ -74,11 +85,15 @@ Nonogram::Nonogram () {
 	maakschoon();
 }
 
+/* Past de hoogte van het nonogram aan. */
+
 void Nonogram::setHoogte (int hoogte) {
 
 	this->hoogte = hoogte;
 	this->muislocatie[0] = hoogte / 2;
 }
+
+/* Past de breedte van het nonogram aan. */
 
 void Nonogram::setBreedte (int breedte) {
 
@@ -86,10 +101,15 @@ void Nonogram::setBreedte (int breedte) {
 	this->muislocatie[1] = breedte / 2;
 }
 
+/* Past het random-percentage van het nonogram aan. */
+
 void Nonogram::setPercentage (int percentage) {
 
 	this->percentage = percentage;
 }
+
+/*	Regelt het inlezen van de huidige beschrijving uit een file. Hierna wordt
+	de inlees-functie aangeroepen die de beschrijvingen van het nonogram aanpast. */
 
 void Nonogram::printinlezenbeschrijving () {
 
@@ -116,12 +136,17 @@ void Nonogram::printinlezenbeschrijving () {
 	invoer.close();
 }
 
+/*	Leest de huidige beschrijving uit een file. De hoogte en breedte van het nonogram worden
+	eerst aangepast en daarna wordt de rest van de file ingelezen naar de huidige beschrijvingen. */
+
 void Nonogram::inlezenbeschrijving(ifstream &invoer) {
 
 	int diepte = 0, dieptek = 0, i = 0, j = 0, getal, nulteller = 1, hoogstearray = 0;
 	bool hoogtebreedte = 0, rijenbeschrijving = 0, endline = 0;
+
 	while (!invoer.eof()) {
 
+		/* Leest de hoogte en breedte in. */
 		if (!hoogtebreedte) {
 			invoer >> hoogte;
 			invoer >> breedte;
@@ -139,6 +164,7 @@ void Nonogram::inlezenbeschrijving(ifstream &invoer) {
 			i = 0;
 			j = 0;
 		}
+		/* Leest het eerste deel van de file in naar de rijbeschrijvingen. */
 		if (getal != 0 || endline) {
 			if (!rijenbeschrijving && diepte < hoogte) {
 				this->rijen[diepte][i] = getal;
@@ -147,6 +173,7 @@ void Nonogram::inlezenbeschrijving(ifstream &invoer) {
 					rijenbeschrijving = 1;
 				}
 			}
+			/* Leest het tweede deel van de file in naar de kolombeschrijvingen. */
 			if (diepte >= hoogte) {
 				dieptek = diepte - hoogte;
 				this->kolommen[dieptek][j] = getal;
@@ -165,14 +192,18 @@ void Nonogram::inlezenbeschrijving(ifstream &invoer) {
 		}
 		endline = 0;
 	}
+	/* Past de hoogte van de kolombeschrijvingen aan zodat het nonogram juist geprint wordt. */
 	aryhoogtenieuw = hoogstearray;
 }
+
+/* Schrijft de huidige beschrijvingen weg naar een file. */
 
 void Nonogram::uitlezenbeschrijving() {
 
 	ofstream uitvoer;
 	int nulteller = 0;
 	char beshoogte, besbreedte, beschrijfgetalbk, beschrijfgetalhk;
+
 	uitvoer.open("outputbeschrijving.cc");
 
 	if (uitvoer.fail()) {
@@ -181,9 +212,14 @@ void Nonogram::uitlezenbeschrijving() {
 
 	uitvoer << hoogte << " " << breedte << endl;
 
+	/* De functies die de rij- en kolombeschrijvingen wegschrijven. */
 	uitlezenbeschrijvingbreedte(uitvoer);
 	uitlezenbeschrijvinghoogte(uitvoer);
+
+	cout << " Beschrijving weggeschreven naar 'outputbeschrijving.cc'." << endl;
 }
+
+/* Leest de huidige rijbeschrijving en schrijft deze weg naar een file. */
 
 void Nonogram::uitlezenbeschrijvingbreedte(ofstream &uitvoer) {
 
@@ -205,6 +241,8 @@ void Nonogram::uitlezenbeschrijvingbreedte(ofstream &uitvoer) {
 		uitvoer << endl;
 	}
 }
+
+/*  Leest de huidige kolombeschrijving en schrijft deze weg naar een file. */
 
 void Nonogram::uitlezenbeschrijvinghoogte(ofstream &uitvoer) {
 
@@ -229,6 +267,8 @@ void Nonogram::uitlezenbeschrijvinghoogte(ofstream &uitvoer) {
 	}
 }
 
+/* Schrijft het huidige beeld weg naar een file. */
+
 void Nonogram::uitlezenbeeld() {
 
 	ofstream uitvoer;
@@ -240,6 +280,7 @@ void Nonogram::uitlezenbeeld() {
 
 	uitvoer << hoogte << " " << breedte << endl;
 
+	/* Schrijft het beeld weg. */
 	for (int i = 0; i < hoogte; i++) {
 		for (int j = 0; j < breedte; j++) {
 			if (nono[i][j] == 1) {
@@ -254,7 +295,10 @@ void Nonogram::uitlezenbeeld() {
 			}
 		}
 	}
+	cout << " Beeld weggeschreven naar 'outputbeschrijving.cc'." << endl;
 }
+
+/* Laat de gebruiker een file kiezen die wordt ingelezen. */
 
 void Nonogram::printinlezenbeeld() {
 
@@ -277,14 +321,18 @@ void Nonogram::printinlezenbeeld() {
 		}
 	}
 
+	/* Roept de functie aan die de file inleest. */
 	inlezenbeeld(invoer);
 }
 
+/* Leest het huidige beeld in uit een file. */
+
 void Nonogram::inlezenbeeld(ifstream &invoer) {
 
-	bool hoogtebreedte = 0, eenkeer = 0;
+	bool hoogtebreedte = 0;
 	char waarde;
 
+	/* Past de hoogte en breedte van het nonogram aan. */
 	if (!hoogtebreedte) {
 		invoer >> hoogte;
 		invoer >> breedte;
@@ -292,6 +340,7 @@ void Nonogram::inlezenbeeld(ifstream &invoer) {
 		setBreedte(breedte);
 		hoogtebreedte = 1;
 	}
+	/* Leest het beeld in. */
 	for (int i = 0; i < hoogte; i++) {
 		for (int j = 0; j < breedte; j++) {
 			invoer >> waarde;
@@ -305,6 +354,20 @@ void Nonogram::inlezenbeeld(ifstream &invoer) {
 	drukaf(0);
 }
 
+/* Maakt alle beschrijvingen 0. */
+
+void Nonogram::clearbeschrijvingen() {
+
+	for (int i = 0; i < breedte; i++) {
+		for (int j = 0; j < hoogte; j++) {
+			rijen[j][i] = 0;
+			kolommen[i][j] = 0;
+		}
+	}
+}
+/* 	Maakt de huidige rijbeschrijving in een 2d-array. Deze wordt geprint als de gebruiker
+	de beschrijvingen reset door de printrijbeschrijving functie. */
+
 void Nonogram::maakrijbeschrijving(int rij) {
 
 	int num = 0, teller = 0;
@@ -313,6 +376,7 @@ void Nonogram::maakrijbeschrijving(int rij) {
 
 		rijennu[rij][i] = 0;
 
+		/* Telt de aaneengesloten zwarte pixels en stopt deze in rijennu[][]. */
 		if (nono[rij][i] == 1) {
 			teller++;
 		} else if (teller != 0) {
@@ -327,6 +391,7 @@ void Nonogram::maakrijbeschrijving(int rij) {
 	}
 }
 
+/* Stelt de te printen rijen gelijk aan de huidige rijbeschrijving. */
 void Nonogram::controleerrijen(int rij) {
 
 	for (int i = 0; i < breedte; i++) {
@@ -334,6 +399,7 @@ void Nonogram::controleerrijen(int rij) {
 	}
 }
 
+/* Print de rijbeschrijving. */
 void Nonogram::printrijbeschrijving(int rij) {
 
 	int teller = 0;
@@ -346,10 +412,16 @@ void Nonogram::printrijbeschrijving(int rij) {
 			teller++;
 		}
 	}
+	/*	Als de huidige beschrijving gelijk is aan de geprinte beschrijving 
+		(en de beschrijving dus klopt met het beeld) wordt er een vinkje geprint. */
 	if (teller == breedte) {
 		cout << "\u2713";
 	}
 }
+
+
+/* 	Maakt de huidige kolombeschrijving in een 2d-array. Deze wordt geprint als de gebruiker
+	de beschrijvingen reset door de printkolombeschrijving functie. */
 
 void Nonogram::maakkolombeschrijving(bool controleer) {
 
@@ -361,6 +433,7 @@ void Nonogram::maakkolombeschrijving(bool controleer) {
 
 			kolommennu[i][j] = 0;
 
+			/* Telt de aaneengesloten rijen zwarte pixels en stopt deze in kolommennu[][]. */
 			if (nono[j][i] == 1) {
 				teller++;
 			} else if (teller != 0) {
@@ -379,11 +452,14 @@ void Nonogram::maakkolombeschrijving(bool controleer) {
 		}
 		num = 0;
 	}
+	/* Houdt de hoogte van de te printen kolombeschrijving bij. */
 	if (controleer) {
 		aryhoogtenieuw = aryhoogte;
 		controleer = 0;
 	}
 }
+
+/* Print de rijbeschrijving. */
 
 void Nonogram::printkolombeschrijving() {
 
@@ -392,6 +468,8 @@ void Nonogram::printkolombeschrijving() {
 	for (int j = 0; j < aryhoogtenieuw; j++) {
 		for (int i = 0; i < breedte; i++) {
 
+			/*	Print de kolombeschrijving en kijkt of deze overeenkomt met de
+				huidige kolombeschrijving. */
 			if (kolommen[i][j] == kolommennu[i][j]) {
 				teller[i]++;
 			}
@@ -411,6 +489,8 @@ void Nonogram::printkolombeschrijving() {
 		}
 		cout << endl;
 	}
+	/*	Als de geprinte kolombeschrijving overeenkomt met de huidige kolombeschrijving
+		(en de beschrijving dus klopt met het beeld) wordt er een vinkje geprint. */
 	for (int i = 0; i < breedte; i++) {
 		if (vink[i]) {
 			cout << "  \u2713";
@@ -422,6 +502,7 @@ void Nonogram::printkolombeschrijving() {
 	cout << endl;
 }
 
+/* Stelt de te printen kolombeschrijving gelijk aan de huidige kolombeschrijving. */
 void Nonogram::controleerkolommen() {
 
 	for (int i = 0; i < breedte; i++) {
@@ -431,12 +512,16 @@ void Nonogram::controleerkolommen() {
 	}
 }
 
+/*	Drukt het nonogram af. De beschrijven parameter geeft aan de functie mee of de 
+	beschrijvingen de beschrijvingen van het huidige beeld moeten worden. */
 void Nonogram::drukaf (bool beschrijven) {
 
 	if ((hoogte != 0) && (breedte != 0)) {
 		for (int i = 0; i < hoogte; i++) {
 			cout << "  ";
 			for (int j = 0; j < breedte; j++) {
+				/*	Print een leeg vierkant voor een 0 en een gevuld vierkant voor een 1.
+					kleurt het vakje dat overeenkomt met de cursor groen. */
 				if (this->muislocatie[0] == i && this->muislocatie[1] == j) {
 					if (nono[i][j] == 0) {
 						cout << "\e[92m\u25A1\e[0m  ";
@@ -468,6 +553,7 @@ void Nonogram::drukaf (bool beschrijven) {
 	beschrijven = 0;
 }
 
+/* Maakt het huidige beeld leeg. */
 void Nonogram::maakschoon () {
 
 	for (int i = 0; i < hoogte; i++) {
@@ -611,7 +697,9 @@ void menu (int optie) {
 	if (optie == 0) { 
 		cout << " S\e[4mc\e[0mhoon | \e[4mR\e[0mandom | "
 		"\e[4mP\e[0marameters | \e[4mT\e[0moggle cursor | \e[4mS\e[0mtoppen\e[0m "
-		"| Reset \e[4mB\e[0meschrijving ";
+		"| Reset \e[4mB\e[0meschrijving " << endl;
+		cout << " \e[4mI\e[0mnlezen beschrijving | \e[4mW\e[0megschrijven beschrijving "
+		"| Inlezen beeld (\e[4mK\e[0m) | Wegschrijven beeld (\e[4mJ\e[0m)";
 	}
 	if (optie == 1) {
 		cout << " \e[4mH\e[0moogte | \e[4mB\e[0mreedte | \e[4mP\e[0mercentage |";
@@ -725,6 +813,10 @@ int keuzemenu (Nonogram &a) {
 				a.maakschoon();
 				a.drukaf(0);
 				break;
+			case 'Y': case 'y':
+				a.clearbeschrijvingen();
+				a.drukaf(0);
+				break;
 			case 'R': case 'r':
 				a.vulrandom();
 				a.drukaf(0);
@@ -745,7 +837,7 @@ int keuzemenu (Nonogram &a) {
 			case 'B': case 'b':
 				a.drukaf(1);
 				break;
-			case 'U': case 'u':
+			case 'W': case 'w':
 				a.uitlezenbeschrijving();
 				break;
 			case 'J': case 'j':
