@@ -25,7 +25,7 @@ class gobord {
     void doezet(char kl, int i, int j);
     // TODO
   private:
-    bordvakje* ingang;
+    Bordvakje* ingang;
     int hoogte, breedte;
     char kleur;
     bool cpu;

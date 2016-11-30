@@ -1,8 +1,8 @@
 /*	Auteurs 		- Jort Gijzen		1874233
 					- Lennard Schaap	1914839
 	Studie			- BSc Informatica
-	Compiler		- G++
-	Datum 			- 
+	Compiler		- g++ -std=c++11
+	Datum 			- 18 november 2016
 	Opdracht		- Nonogram
 	
 	Dit programma stelt de gebruiker in staat om een Nonogram te maken en op te lossen
@@ -714,7 +714,7 @@ void menu (int optie) {
 	if (optie == 0) { 
 		cout << " S\e[4mc\e[0mhoon | \e[4mR\e[0mandom | "
 		"\e[4mP\e[0marameters | \e[4mT\e[0moggle cursor | \e[4mS\e[0mtoppen\e[0m "
-		"| Reset \e[4mB\e[0meschrijving " << endl;
+		"| Reset \e[4mB\e[0meschrijving | Leeg beschrijving (\e[4mY\e[0m)" << endl;
 		cout << " \e[4mI\e[0mnlezen beschrijving | \e[4mW\e[0megschrijven beschrijving "
 		"| Inlezen beeld (\e[4mK\e[0m) | Wegschrijven beeld (\e[4mJ\e[0m)";
 	}

@@ -49,6 +49,7 @@ int leesGetal (int bovengrens) {
 	return getal;
 }
 
+
 void hoofdMenu(gobord &gobord) {
 
 	bool goed = 0;
