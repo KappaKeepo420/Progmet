@@ -27,8 +27,6 @@ class gobord {
   private:
     bordvakje* ingang;
     bordvakje* dingang;
-    bordvakje* nepingang;
-    bordvakje* printer;
     int hoogte, breedte;
     char kleur;
     bool cpu;

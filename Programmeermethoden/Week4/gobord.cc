@@ -36,6 +36,7 @@ void gobord::bouwBord() {
 
 void gobord::rijenPlakken() {
 
+	bordvakje* nepingang;
 	for (int i = 0; i < breedte; i++) {
 		bordvakje* nieuw;
 		nieuw = new bordvakje;
@@ -58,6 +59,7 @@ void gobord::rijenPlakken() {
 
 void gobord::drukaf() {
 
+	bordvakje* printer;
 	printer = ingang;
 	nepingang = ingang;
 	for (int j = 0; j < hoogte; j++) {
