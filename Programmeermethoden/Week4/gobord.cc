@@ -5,6 +5,9 @@ using namespace std;
 
 bordvakje::bordvakje() {
 	
+	for (int i = 0; i < 8; i++) {
+		this->buren[i] = NULL;
+	}
 }
 
 gobord::gobord() {
@@ -15,63 +18,89 @@ gobord::gobord(int hoogte, int breedte) {
 
 	this->hoogte = hoogte;
 	this->breedte = breedte;
-}//gobord::gobord
+
+	bouwBord();
+}
 
 void gobord::bouwBord() {
 
-	for (int i = 0; i < breedte; i++) {
-		bordvakje* top;
-		top = new bordvakje;
-		if (ingang != NULL) {
-			top->buren[2] = ingang;
-			ingang->buren[6] = top;
-		}
-		ingang = top;
-	}
-	nepingang = ingang;
-	for (int j = 0; j < hoogte; j++) {
-		rijenPlakken();
+	bordvakje* rij1 = maakRij(breedte);
+	bordvakje* rij2 = maakRij(breedte);
+
+	ingang = rij1;
+
+	for (int i = 0; i < hoogte; i++) {
+		rits(rij1, rij2);
+		rij1 = rij2;
+		rij2 = maakRij(breedte);
 	}
 }
 
-void gobord::rijenPlakken() {
+bordvakje* gobord::maakRij(int aantal) {
 
-	bordvakje* nepingang;
-	for (int i = 0; i < breedte; i++) {
-		bordvakje* nieuw;
-		nieuw = new bordvakje;
-		if (dingang != NULL) {
-			nieuw->buren[2] = dingang;
-			dingang->buren[6] = nieuw;
-			if (dingang->buren[2] != NULL) {
-				nieuw->buren[0] = nepingang;
-				nieuw->buren[1] = nepingang->buren[2];
-				nepingang->buren[4] = nieuw;
-				nepingang->buren[2]->buren[5] = nieuw;
-				nepingang = nepingang->buren[2];
-				nieuw = nieuw->buren[2];
-			}
+	bordvakje* rijingang = NULL;
+
+	for (int i = 0; i < aantal; i++) {
+		bordvakje* temp;
+		temp = new bordvakje;
+		if (rijingang != NULL) {
+			temp->buren[RECHTS] = rijingang;
+			rijingang->buren[LINKS] = temp;
 		}
-		dingang = nieuw;
+		rijingang = temp;
 	}
-	nepingang = dingang;
+
+	return rijingang;
 }
 
-void gobord::drukaf() {
+void gobord::rits(bordvakje* boven, bordvakje* onder) {
 
-	bordvakje* printer;
-	printer = ingang;
-	nepingang = ingang;
-	for (int j = 0; j < hoogte; j++) {
-		for (int i = 0; i < breedte; i++) {
-			if (printer != NULL) {
-				cout << "X ";
-			}
-			printer = printer->buren[2];
+	while (boven && onder) {
+
+		onder->buren[BOVEN] = boven;
+		boven->buren[ONDER] = onder;
+
+		if (boven->buren[RECHTS]) {
+			onder->buren[RECHTS_BOVEN] = boven->buren[RECHTS];
 		}
+		if (boven->buren[LINKS]) {
+			onder->buren[LINKS_BOVEN] = boven->buren[LINKS];
+		}
+		if (onder->buren[RECHTS]) {
+			boven->buren[RECHTS_ONDER] = onder->buren[RECHTS];
+		}
+		if (onder->buren[LINKS]) {
+			boven->buren[LINKS_ONDER] = onder->buren[LINKS];
+		}
+
+		if (boven->buren[RECHTS]) {
+			boven = boven->buren[RECHTS];
+		} else {
+			break;
+		}
+		if (onder->buren[LINKS]) {
+			onder = onder->buren[RECHTS];
+		} else {
+			break;
+		}
+	}
+}
+
+void gobord::drukAf (bordvakje* temp) {
+
+	bordvakje* hulp = temp;
+
+	for (int i = 0; i < hoogte; i++) {
+
+		while (hulp != NULL) {
+
+			cout << "\e[92m\u25A1\e[0m  " << temp->kleur;
+
+			hulp = hulp->buren[RECHTS];
+		}
+		temp = temp->buren[ONDER];
+		hulp = temp;
 		cout << endl;
-		nepingang = nepingang->buren[4];
-		printer = nepingang;
 	}
 }
 
@@ -85,4 +114,9 @@ void gobord::setKleur(char kleur) {
 
 void gobord::setCPU(bool cpu) {
 	this->cpu = cpu;
+}
+
+bordvakje* gobord::getIngang() {
+
+	return ingang;
 }

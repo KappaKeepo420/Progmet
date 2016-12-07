@@ -1,10 +1,19 @@
 // file gobord.h
 
+#define BOVEN 0
+#define LINKS_BOVEN 1
+#define RECHTS 2
+#define RECHTS_ONDER 3
+#define ONDER 4
+#define LINKS_ONDER 5
+#define LINKS 6
+#define RECHTS_BOVEN 7
+
 class bordvakje {
   public:
-    char kleur;           //     7 0 1
-    bordvakje* buren[8] = {NULL};  //     6   2
-    bordvakje();          //     5 4 3
+    char kleur;                    //     7 0 1
+    bordvakje* buren[8];           //     6   2
+    bordvakje();                   //     5 4 3
 };//bordvakje
 
 class gobord {
@@ -16,17 +25,16 @@ class gobord {
     void setCPU(bool cpu);
     void setKleur(char kleur);
     void bouwBord();
-    void rijenPlakken();
     void randomZet(char kl, int & i, int & j);
     void mensZet(char kl, int & i, int & j);
-    void drukaf();
+    void drukAf(bordvakje* ingang);
     bool klaar();
     bool gewonnen(char & kl);
     void doezet(char kl, int i, int j);
+    bordvakje* getIngang();
     // TODO
   private:
     bordvakje* ingang;
-    bordvakje* dingang;
     int hoogte, breedte;
     char kleur;
     bool cpu;

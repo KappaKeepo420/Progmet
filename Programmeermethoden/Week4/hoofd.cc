@@ -98,7 +98,7 @@ int main() {
 
 	gobord gobord(5,6);
 
-	hoofdMenu(gobord);
-	
+	gobord.drukAf(gobord.getIngang());
+
 	return 0;
 }
