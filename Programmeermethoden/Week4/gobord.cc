@@ -27,27 +27,49 @@ void gobord::bouwBord() {
 			ingang->buren[6] = top;
 		}
 		ingang = top;
-		cout << "boem" << endl;
 	}
-
+	nepingang = ingang;
 	for (int j = 0; j < hoogte; j++) {
-		rijenplakken();
+		rijenPlakken();
 	}
 }
 
-void gobord::rijenplakken() {
+void gobord::rijenPlakken() {
 
 	for (int i = 0; i < breedte; i++) {
 		bordvakje* nieuw;
 		nieuw = new bordvakje;
-		if (ingang != NULL) {
-			nieuw->buren[0] = ingang;
-			nieuw->buren[1] = ingang->buren[2];
-			ingang = nieuw->buren[4];
-			ingang->buren[3] = nieuw->buren[2];
+		if (dingang != NULL) {
+			nieuw->buren[2] = dingang;
+			dingang->buren[6] = nieuw;
+			if (dingang->buren[2] != NULL) {
+				nieuw->buren[0] = nepingang;
+				nieuw->buren[1] = nepingang->buren[2];
+				nepingang->buren[4] = nieuw;
+				nepingang->buren[2]->buren[5] = nieuw;
+				nepingang = nepingang->buren[2];
+				nieuw = nieuw->buren[2];
+			}
 		}
-		ingang = nieuw;
-		cout << "hatseflats" << endl;
+		dingang = nieuw;
+	}
+	nepingang = dingang;
+}
+
+void gobord::drukaf() {
+
+	printer = ingang;
+	nepingang = ingang;
+	for (int j = 0; j < hoogte; j++) {
+		for (int i = 0; i < breedte; i++) {
+			if (printer != NULL) {
+				cout << "X ";
+			}
+			printer = printer->buren[2];
+		}
+		cout << endl;
+		nepingang = nepingang->buren[4];
+		printer = nepingang;
 	}
 }
 

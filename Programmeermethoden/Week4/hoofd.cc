@@ -91,6 +91,7 @@ void hoofdMenu(gobord &gobord) {
 	}
 
 	gobord.bouwBord();
+	// gobord.drukaf();
 }
 
 int main() {

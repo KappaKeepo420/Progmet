@@ -3,7 +3,7 @@
 class bordvakje {
   public:
     char kleur;           //     7 0 1
-    bordvakje* buren[8];  //     6   2
+    bordvakje* buren[8] = {NULL};  //     6   2
     bordvakje();          //     5 4 3
 };//bordvakje
 
@@ -16,7 +16,7 @@ class gobord {
     void setCPU(bool cpu);
     void setKleur(char kleur);
     void bouwBord();
-    void rijenplakken();
+    void rijenPlakken();
     void randomZet(char kl, int & i, int & j);
     void mensZet(char kl, int & i, int & j);
     void drukaf();
@@ -25,7 +25,10 @@ class gobord {
     void doezet(char kl, int i, int j);
     // TODO
   private:
-    Bordvakje* ingang;
+    bordvakje* ingang;
+    bordvakje* dingang;
+    bordvakje* nepingang;
+    bordvakje* printer;
     int hoogte, breedte;
     char kleur;
     bool cpu;
