@@ -32,14 +32,12 @@ class gobord {
     bool gewonnen(char & kl);
     void doezet(char kl, int i, int j);
     bordvakje* getIngang();
-    // TODO
-  private:
+    private:
     bordvakje* ingang;
     int hoogte, breedte;
     char kleur;
     bool cpu;
     void rits(bordvakje* boven, bordvakje* onder);
     bordvakje* maakRij(int aantal);
-    // TODO
 
-};//gobord
+};
