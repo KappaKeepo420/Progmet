@@ -17,6 +17,7 @@ char leesOptie () {
 
 	return keuze;
 }
+
 int leesGetal (int bovengrens) {
 
 	int cijfer = 0, getal = 0;
@@ -49,6 +50,45 @@ int leesGetal (int bovengrens) {
 	return getal;
 }
 
+void zetMenu(gobord &gobord) {
+
+	char keuze = '\0';
+	bool stop = 0;
+
+	while (!stop) {
+
+		gobord.drukAf(gobord.getIngang());
+		keuze = leesOptie();
+
+		switch (keuze) {
+			case '/':
+				if (gobord.locatie(gobord.getMuisX(), gobord.getMuisY())->kleur != '\0') {
+					break;
+				}
+				gobord.doeZet(gobord.getKleur(), gobord.getMuisX(), gobord.getMuisY());
+				gobord.randomZet(gobord.getCPUKleur());
+				break;
+			case 'W': case 'w':
+				gobord.verplaatsHoog();
+				break;
+			case 'A': case 'a':
+				gobord.verplaatsLinks();
+				break;
+			case 'S': case 's':
+				gobord.verplaatsLaag();
+				break;
+			case 'D': case 'd':
+				gobord.verplaatsRechts();
+				break;
+			case 'X': case 'x':
+				stop = 1;
+				break;
+			default:
+				cout << " Ongeldige selectie, probeer opnieuw." << endl;
+				break;
+		}
+	}
+}
 
 void hoofdMenu(gobord &gobord) {
 
@@ -74,15 +114,15 @@ void hoofdMenu(gobord &gobord) {
 
 	if (keuze == 'm' || keuze == 'M') {
 
-		cout << " Met welke kleur wilt u spelen? (\e[4mW\e[0mit / \e[4mR\e[0mood) ";
+		cout << " Met welke kleur wilt u spelen? (\e[4mW\e[0mit / \e[4mB\e[0mlauw) ";
 
 		while (!goed) {
 			keuze = leesOptie();
 			if (keuze == 'w' || keuze == 'W') {
 				gobord.setKleur('w');
 				goed = 1;
-			} else if (keuze == 'r' || keuze == 'R') {
-				gobord.setKleur('r');
+			} else if (keuze == 'b' || keuze == 'B') {
+				gobord.setKleur('b');
 				goed = 1;
 			} else {
 				cout << " Ongeldige keuze, probeer opnieuw: ";
@@ -90,15 +130,14 @@ void hoofdMenu(gobord &gobord) {
 		}
 	}
 
-	gobord.bouwBord();
-	// gobord.drukaf();
+	zetMenu(gobord);
 }
 
 int main() {
 
-	gobord gobord(5,6);
+	gobord gobord(20,20);
 
-	gobord.drukAf(gobord.getIngang());
+	hoofdMenu(gobord);
 
 	return 0;
 }

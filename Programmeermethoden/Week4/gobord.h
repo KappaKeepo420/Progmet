@@ -24,20 +24,31 @@ class gobord {
     ~gobord();
     void setCPU(bool cpu);
     void setKleur(char kleur);
+    char getKleur();
+    char getCPUKleur();
+    int getMuisX();
+    int getMuisY();
+    int getHoogte();
+    void verplaatsHoog();
+    void verplaatsLaag();
+    void verplaatsLinks();
+    void verplaatsRechts();
     void bouwBord();
-    void randomZet(char kl, int & i, int & j);
+    void randomZet(char kl);
     void mensZet(char kl, int & i, int & j);
     void drukAf(bordvakje* ingang);
     bool klaar();
-    bool gewonnen(char & kl);
-    void doezet(char kl, int i, int j);
+    bool gewonnen(char &kleur, bordvakje* laatstezet);
+    void doeZet(char kl, int i, int j);
+    bordvakje* locatie (int x, int y);
     bordvakje* getIngang();
-    private:
+  private:
     bordvakje* ingang;
     int hoogte, breedte;
+    int muislocatie[2];
     char kleur;
     bool cpu;
+    int stukken;
     void rits(bordvakje* boven, bordvakje* onder);
     bordvakje* maakRij(int aantal);
-
 };
