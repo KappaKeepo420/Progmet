@@ -18,13 +18,18 @@ bordvakje::bordvakje() {
 	for (int i = 0; i < 8; i++) {
 		this->buren[i] = NULL;
 	}
+	this->kleur = '\0';
 }
 
 gobord::gobord() {
-
+	ingang = NULL;
+	laatstezet = NULL;
 }
 
 gobord::gobord(int breedte, int hoogte) {
+
+	ingang = NULL;
+	laatstezet = NULL;
 
 	this->hoogte = hoogte;
 	this->breedte = breedte;
@@ -144,11 +149,9 @@ bordvakje* gobord::locatie (int x, int y) {
 void gobord::doeZet (char kl, int i, int j) {
 
 	locatie(i, j)->kleur = kl;
+	laatstezet = locatie(i, j);
 	stukken++;
-	if (gewonnen(kl, locatie(i,j))) {
-		cout << "GG EZ" << endl;
-	}
-	klaar();
+	controleer(kl);
 }
 
 void gobord::randomZet (char kl) {
@@ -163,64 +166,119 @@ void gobord::randomZet (char kl) {
 	doeZet(kl, ranX, ranY);
 }
 
-bool gobord::gewonnen (char &kleur, bordvakje* laatstezet) {
+bool gobord::controleer (char kl) {
 
-	bordvakje* loc = laatstezet;
-	int teller [8] = {0};
-	int j;
-	bool gedraaid = 0;
+	string kleur;
 
-	for (int i = 0; i < 8; i++) {
-		gedraaid = 0;
-		while (loc->buren[i] != NULL && !gedraaid) {
-			if (loc->kleur == loc->buren[i]->kleur) {
-				teller[i]++;
+	if (kl == 'w') {
+		kleur = "Wit";
+	} else {
+		kleur = "Blauw";
+	}
+
+	if (gewonnen()) {
+		if (!vervolg) {
+			drukAf();
+			cout << kleur << " heeft gewonnen!" << endl;
+			exit(0);
+		}
+		return true;
+	}
+	if (klaar()) {
+		if (!vervolg) {
+			drukAf();
+			cout << "Het bord is vol! Gelijkspel." << endl;
+			exit(0);
+		}
+		return true;
+	}
+	return false;
+}
+
+// stapel.h -> gobord.h;
+// stapel * stapel  -> gobord.h;
+
+bool gobord::gewonnen () {
+
+	if (laatstezet) {
+
+		bordvakje* loc = laatstezet;
+		int teller = 0;
+
+		for (int i = 0; i < 4; i++) {
+			teller = 0;
+			loc = laatstezet;
+			while (loc->buren[i] && loc->kleur == loc->buren[i]->kleur) {
+				teller++;
 				loc = loc->buren[i];
-				if (teller[i] == 4) {
-					return 1;
-				}
-			} else if (!gedraaid) {
-				teller[i] = 1;
-				j = i;
-				gedraaid++;
-
-				if (j < 4) {
-					j += 4;
-				} else {
-					j -= 4;
-				}
-				while (loc->buren[j] != NULL && loc->kleur == loc->buren[j]->kleur) {
-					if (loc->kleur == loc->buren[j]->kleur) {
-						teller[i]++;
-					}
-					if (teller[i] == 5) {
-						return 1;
-					}
-					loc = loc->buren[j];
-				}
-				gedraaid = 1;
+			}
+			loc = laatstezet;
+			while (loc->buren[i + 4] && loc->kleur == loc->buren[i + 4]->kleur) {
+				teller++;
+				loc = loc->buren[i + 4];
+			}
+			if (teller >= 2) {
+				return true;
 			}
 		}
 	}
-	return 0;
+	return false;
 }
 
 bool gobord::klaar () {
 
-	if (stukken == hoogte * breedte) {
-		return 1;
-	}
-	return 0;
+	return (stukken == hoogte * breedte);
 }
 
-void gobord::drukAf (bordvakje* temp) {
+void gobord::zetTerug (int i, int j) {
 
-	bordvakje* hulp = temp;
+	locatie(i, j)->kleur = '\0';
+	stukken--;
+}
+
+int gobord::vervolgPartijen (char kl) {
+
+	int partijen = 0;
+
+	if (klaar()) {
+		return 1;
+	}
+
+	for (int j = 0; j < hoogte; j++) {
+		for (int i = 0; i < breedte; i++) {
+			if (locatie(i, j)->kleur == '\0') {
+				doeZet(kl, i, j);
+				if (kl == 'w') {
+					kl = 'b';
+				} else {
+					kl = 'w';
+				}
+				if (gewonnen()) {
+					partijen++;
+				} else {
+					partijen += vervolgPartijen(kl);
+				}
+				zetTerug(i, j);
+				if (kl == 'w') {
+					kl = 'b';
+				} else {
+					kl = 'w';
+				}
+			}
+		}
+	}
+	return partijen;
+}
+
+void gobord::drukAf () {
+
+	bordvakje* hulp = ingang;
+	bordvakje* temp = ingang;
 	int j = 0;
 
 	for (int i = 0; i < hoogte; i++) {
 
-		while (hulp != NULL) {
+		while (hulp) {
 
 			if (muislocatie[0] == j && muislocatie[1] == i) {
 				if (hulp->kleur == 'w') {
@@ -247,6 +305,7 @@ void gobord::drukAf (bordvakje* temp) {
 		j = 0;
 		cout << endl;
 	}
+	cout << endl;
 }
 
 gobord::~gobord() {
@@ -285,6 +344,6 @@ void gobord::setCPU(bool cpu) {
 	this->cpu = cpu;
 }
 
-bordvakje* gobord::getIngang() {
-	return ingang;
+void gobord::setVervolg(bool vervolg) {
+	this->vervolg = vervolg;
 }

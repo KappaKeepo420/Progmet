@@ -57,7 +57,7 @@ void zetMenu(gobord &gobord) {
 
 	while (!stop) {
 
-		gobord.drukAf(gobord.getIngang());
+		gobord.drukAf();
 		keuze = leesOptie();
 
 		switch (keuze) {
@@ -80,6 +80,11 @@ void zetMenu(gobord &gobord) {
 			case 'D': case 'd':
 				gobord.verplaatsRechts();
 				break;
+			case 'V': case 'v':
+				gobord.setVervolg(true);
+				cout << "Vervolgpartijen: " << gobord.vervolgPartijen(gobord.getKleur()) << endl;
+				gobord.setVervolg(false);
+				break;
 			case 'X': case 'x':
 				stop = 1;
 				break;
@@ -90,9 +95,19 @@ void zetMenu(gobord &gobord) {
 	}
 }
 
+void cpuVscpu(gobord &gobord) {
+
+	while (true) {
+		gobord.randomZet('w');
+		gobord.drukAf();
+		gobord.randomZet('b');
+		gobord.drukAf();
+	}
+}
+
 void hoofdMenu(gobord &gobord) {
 
-	bool goed = 0;
+	bool goed = 0, cpu = 0;
 	char keuze;
 
 	cout << " \e[4mM\e[0mens tegen CPU of \e[4mC\e[0mPU tegen CPU? ";
@@ -102,6 +117,7 @@ void hoofdMenu(gobord &gobord) {
 		if (keuze == 'c' || keuze == 'C') {
 			gobord.setCPU(1);
 			goed = 1;
+			cpu = 1;
 		} else if (keuze == 'm' || keuze == 'M') {
 			gobord.setCPU(0);
 			goed = 1;
@@ -129,13 +145,16 @@ void hoofdMenu(gobord &gobord) {
 			}
 		}
 	}
-
-	zetMenu(gobord);
+	if (cpu) {
+		cpuVscpu(gobord);
+	} else {
+		zetMenu(gobord);
+	}
 }
 
 int main() {
 
-	gobord gobord(20,20);
+	gobord gobord(3,3);
 
 	hoofdMenu(gobord);
 
