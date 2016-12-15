@@ -5,11 +5,13 @@
 using namespace std;
 
 int getRandmt19937(const int& A, const int& B) {
+
 	static random_device randDev;
 	static mt19937 twister(randDev());
 	static uniform_int_distribution<int> dist;
 
 	dist.param(uniform_int_distribution<int>::param_type(A, B));
+
 	return dist(twister);
 }
 
@@ -22,21 +24,50 @@ bordvakje::bordvakje() {
 }
 
 gobord::gobord() {
-	ingang = NULL;
-	laatstezet = NULL;
+
+	this->ingang = NULL;
+	this->laatstezet = NULL;
+	this->vervolg = false;
+	this->cpu = false;
+	this->hoogte = 19;
+	this->breedte = 19;
+	this->muislocatie[0] = breedte / 2;
+	this->muislocatie[1] = hoogte / 2;
+	bouwBord();
 }
 
 gobord::gobord(int breedte, int hoogte) {
 
-	ingang = NULL;
-	laatstezet = NULL;
-
+	this->ingang = NULL;
+	this->laatstezet = NULL;
+	this->vervolg = false;
+	this->cpu = false;
 	this->hoogte = hoogte;
 	this->breedte = breedte;
 	this->muislocatie[0] = breedte / 2;
 	this->muislocatie[1] = hoogte / 2;
-
 	bouwBord();
+}
+
+gobord::~gobord() {
+
+	bordvakje* boven;
+
+	while (ingang->buren[ONDER]) {
+		boven = ingang;
+		ingang = ingang->buren[ONDER];
+		while (boven->buren[RECHTS]) {
+			boven = boven->buren[RECHTS];
+			delete boven->buren[LINKS];
+		}
+		boven = boven->buren[ONDER];
+		delete boven->buren[BOVEN];
+	}
+	while (ingang->buren[RECHTS]) {
+		ingang = ingang->buren[RECHTS];
+		delete ingang->buren[LINKS];
+	}
+	delete ingang;
 }
 
 /*	Verplaatst de cursor naar boven. */
@@ -150,8 +181,8 @@ void gobord::doeZet (char kl, int i, int j) {
 
 	locatie(i, j)->kleur = kl;
 	laatstezet = locatie(i, j);
+	Stapel.voegtoe(i,j);
 	stukken++;
-	controleer(kl);
 }
 
 void gobord::randomZet (char kl) {
@@ -177,26 +208,17 @@ bool gobord::controleer (char kl) {
 	}
 
 	if (gewonnen()) {
-		if (!vervolg) {
-			drukAf();
-			cout << kleur << " heeft gewonnen!" << endl;
-			exit(0);
-		}
+		drukAf();
+		cout << kleur << " heeft gewonnen!" << endl;
 		return true;
 	}
 	if (klaar()) {
-		if (!vervolg) {
-			drukAf();
-			cout << "Het bord is vol! Gelijkspel." << endl;
-			exit(0);
-		}
+		drukAf();
+		cout << "Het bord is vol! Gelijkspel." << endl;
 		return true;
 	}
 	return false;
 }
-
-// stapel.h -> gobord.h;
-// stapel * stapel  -> gobord.h;
 
 bool gobord::gewonnen () {
 
@@ -212,10 +234,23 @@ bool gobord::gewonnen () {
 				teller++;
 				loc = loc->buren[i];
 			}
-			loc = laatstezet;
+			if (!loc->buren[i]) {
+				cout << "leeg" << endl;
+			} else {
+				cout << "t " << teller << " i " << i << "k " << loc->kleur << "k2 " << loc->buren[i]->kleur << endl;
+			}
+			if (teller >= 2) {
+				return true;
+			}
+			teller = 0;
 			while (loc->buren[i + 4] && loc->kleur == loc->buren[i + 4]->kleur) {
 				teller++;
 				loc = loc->buren[i + 4];
+			}
+			if (!loc->buren[i + 4]) {
+				cout << "leeg" << endl;
+			} else {
+				cout << "a " << teller << " i " << i << "k " << loc->kleur << "k2 " << loc->buren[i + 4]->kleur << endl;
 			}
 			if (teller >= 2) {
 				return true;
@@ -233,6 +268,7 @@ bool gobord::klaar () {
 void gobord::zetTerug (int i, int j) {
 
 	locatie(i, j)->kleur = '\0';
+	Stapel.verwijder(i, j);
 	stukken--;
 }
 
@@ -248,26 +284,28 @@ int gobord::vervolgPartijen (char kl) {
 		for (int i = 0; i < breedte; i++) {
 			if (locatie(i, j)->kleur == '\0') {
 				doeZet(kl, i, j);
-				if (kl == 'w') {
-					kl = 'b';
-				} else {
-					kl = 'w';
-				}
+				switchKleur(kl);
 				if (gewonnen()) {
 					partijen++;
 				} else {
 					partijen += vervolgPartijen(kl);
 				}
 				zetTerug(i, j);
-				if (kl == 'w') {
-					kl = 'b';
-				} else {
-					kl = 'w';
-				}
+				switchKleur(kl);
 			}
-		}
+		} 
 	}
 	return partijen;
+}
+
+char gobord::switchKleur (char kl) {
+
+	if (kl == 'w') {
+		return 'b';
+	} else {
+		return 'w';
+	}
+	return '\0';
 }
 
 void gobord::drukAf () {
@@ -276,10 +314,14 @@ void gobord::drukAf () {
 	bordvakje* temp = ingang;
 	int j = 0;
 
+	if (cpu) {
+		muislocatie[0] = -1;
+		muislocatie[1] = -1;
+	}
+
 	for (int i = 0; i < hoogte; i++) {
 
 		while (hulp) {
-
 			if (muislocatie[0] == j && muislocatie[1] == i) {
 				if (hulp->kleur == 'w') {
 					cout << "\e[36m\u25CF\e[0m  ";
@@ -308,12 +350,8 @@ void gobord::drukAf () {
 	cout << endl;
 }
 
-gobord::~gobord() {
-  // TODO
-}//gobord::~gobord
-
-void gobord::setKleur(char kleur) {
- 	this->kleur = kleur;
+void gobord::setKleur(char kl) {
+ 	this->kleur = kl;
 }
 
 char gobord::getKleur() {

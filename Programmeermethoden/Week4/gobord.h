@@ -1,5 +1,7 @@
 // file gobord.h
 
+#include "stapel.h"
+
 #define BOVEN 0
 #define LINKS_BOVEN 1
 #define RECHTS 2
@@ -23,9 +25,10 @@ class gobord {
     gobord(int hoogte, int breedte);
     ~gobord();
     void setCPU(bool cpu);
-    void setKleur(char kleur);
+    void setKleur(char kl);
     char getKleur();
     char getCPUKleur();
+    char switchKleur(char kl);
     int getMuisX();
     int getMuisY();
     int getHoogte();
@@ -44,20 +47,16 @@ class gobord {
     int vervolgPartijen(char kl);
     void setVervolg(bool vervolg);
     void zetTerug(int j, int i);
-    void remLaatsteZet();
-    void resetPartijen();
-    unsigned long long getPartijen();
     bordvakje* locatie (int x, int y);
-    bordvakje* getIngang();
   private:
     bordvakje* ingang;
-    //stapel* stapel;
+    stapel Stapel;
     bordvakje* laatstezet;
     int hoogte, breedte;
     int muislocatie[2];
     char kleur;
     bool cpu;
-    bool vervolg = false;
+    bool vervolg;;
     int stukken;
     void rits(bordvakje* boven, bordvakje* onder);
     bordvakje* maakRij(int aantal);
