@@ -1,6 +1,17 @@
-// file gobord.h
+/*  Auteurs         - Jort Gijzen       1874233
+                    - Lennard Schaap    1914839
+    Studie          - BSc Informatica
+    Compiler        - g++ -std=c++11
+    Datum           - 18 december 2016
+    Opdracht        - Gomoku
+    File            - gobord.h
+    
+    Dit is de headerfile van gobord.cc.
+*/
 
 #include "stapel.h"
+
+/*  Defines voor het gemak. */
 
 #define BOVEN 0
 #define LINKS_BOVEN 1
@@ -11,6 +22,7 @@
 #define LINKS 6
 #define RECHTS_BOVEN 7
 
+/*  De klasse bordvakje. Een bordvakje heeft een kleur en 8 buren. */
 class bordvakje {
   public:
     char kleur;                    //     7 0 1
@@ -18,6 +30,8 @@ class bordvakje {
     bordvakje();                   //     5 4 3
 };//bordvakje
 
+/*  De gobord klasse met memberfuncties- en variabelen. 
+    Bij het aanmaken van een gobord wordt de stapel ook aangemaakt. */
 class gobord {
 
   public:
@@ -37,7 +51,7 @@ class gobord {
     void verplaatsLinks();
     void verplaatsRechts();
     void bouwBord();
-    void randomZet(char kl);
+    bool randomZet(char kl);
     void mensZet(char kl, int & i, int & j);
     void drukAf();
     bool klaar();
@@ -46,18 +60,15 @@ class gobord {
     void doeZet(char kl, int i, int j);
     int vervolgPartijen(char kl);
     void setVervolg(bool vervolg);
-    void zetTerug(int j, int i);
+    void zetTerug();
     bordvakje* locatie (int x, int y);
   private:
     bordvakje* ingang;
-    stapel Stapel;
     bordvakje* laatstezet;
-    int hoogte, breedte;
+    stapel Stapel;
+    bool cpu, vervolg;
+    int hoogte, breedte, stukken;
     int muislocatie[2];
-    char kleur;
-    bool cpu;
-    bool vervolg;;
-    int stukken;
     void rits(bordvakje* boven, bordvakje* onder);
     bordvakje* maakRij(int aantal);
 };

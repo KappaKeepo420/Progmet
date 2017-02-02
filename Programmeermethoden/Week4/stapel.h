@@ -1,6 +1,18 @@
+/*  Auteurs         - Jort Gijzen       1874233
+                    - Lennard Schaap    1914839
+    Studie          - BSc Informatica
+    Compiler        - g++ -std=c++11
+    Datum           - 18 december 2016
+    Opdracht        - Gomoku
+    File            - stapel.cc
+    
+    Dit is de headerfile van stapel.cc.
+*/
+
 #ifndef STAPEL_H
 #define STAPEL_H
 
+/* Het vakje met inhoud i en j en een pointer naar het volgende vakje. */
 struct vakje {
 	vakje();
 	int i;
@@ -8,6 +20,7 @@ struct vakje {
 	vakje* volgende;
 };
 
+/* De stapel klasse met de memberfuncties- en variabelen. */
 class stapel {
   public:
   	stapel();

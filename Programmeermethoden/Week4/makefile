@@ -10,4 +10,4 @@ clean:
 	\rm gijzenschaap4.tar
 	\rm *.o hetspel
 tar:
-	tar cfv gijzenschaap4.tar gobord.cc gobord.h hoofd.cc
+	tar cfv gijzenschaap4.tar gobord.cc gobord.h hoofd.cc stapel.cc stapel.h
