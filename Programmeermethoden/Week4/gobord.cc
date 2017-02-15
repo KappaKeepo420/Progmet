@@ -194,7 +194,7 @@ bool gobord::controleer (char kl) {
 	}
 	return false;
 }
-
+    gobord();    gobord();      gobord();  gobord();
 // stapel.h -> gobord.h;
 // stapel * stapel  -> gobord.h;
 
