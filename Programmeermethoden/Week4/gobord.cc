@@ -1,18 +1,33 @@
-// file gobord.cc
+/*	Auteurs 		- Jort Gijzen		1874233
+					- Lennard Schaap	1914839
+	Studie			- BSc Informatica
+	Compiler		- g++ -std=c++11
+	Datum 			- 18 december 2016
+	Opdracht		- Gomoku
+	File			- gobord.cc
+	
+	Dit zijn de memberfuncties van de gobord klasse.
+*/
+
 #include <iostream>
 #include <random>
 #include "gobord.h"
 using namespace std;
 
+/*	De random-functie mt19937 die ons de willekeurige getallen zal leveren.
+	Zie https://en.wikipedia.org/wiki/Mersenne_Twister voor meer informatie. */
 int getRandmt19937(const int& A, const int& B) {
+
 	static random_device randDev;
 	static mt19937 twister(randDev());
 	static uniform_int_distribution<int> dist;
 
 	dist.param(uniform_int_distribution<int>::param_type(A, B));
+
 	return dist(twister);
 }
 
+/*	Bordvakje constructor: Initialiseert alle buren naar NULL. */
 bordvakje::bordvakje() {
 	
 	for (int i = 0; i < 8; i++) {
@@ -21,22 +36,56 @@ bordvakje::bordvakje() {
 	this->kleur = '\0';
 }
 
+/*	Gobord constructor: Initialiseert de beginwaarden. */ 
 gobord::gobord() {
-	ingang = NULL;
-	laatstezet = NULL;
+
+	this->ingang = NULL;
+	this->laatstezet = NULL;
+	this->vervolg = false;
+	this->cpu = false;
+	this->stukken = 0;
+	this->hoogte = 19;
+	this->breedte = 19;
+	this->muislocatie[0] = breedte / 2;
+	this->muislocatie[1] = hoogte / 2;
+	bouwBord();
 }
 
+/*	Gobord constructor met parameters: Initialiseert de beginwaarden. */ 
 gobord::gobord(int breedte, int hoogte) {
 
-	ingang = NULL;
-	laatstezet = NULL;
-
+	this->ingang = NULL;
+	this->laatstezet = NULL;
+	this->vervolg = false;
+	this->cpu = false;
+	this->stukken = 0;
 	this->hoogte = hoogte;
 	this->breedte = breedte;
 	this->muislocatie[0] = breedte / 2;
 	this->muislocatie[1] = hoogte / 2;
-
 	bouwBord();
+}
+
+/*	Gobord destructor. Verwijdert alle aangemaakte bordvakjes. */
+gobord::~gobord() {
+
+	bordvakje* boven;
+
+	while (ingang->buren[ONDER]) {
+		boven = ingang;
+		ingang = ingang->buren[ONDER];
+		while (boven->buren[RECHTS]) {
+			boven = boven->buren[RECHTS];
+			delete boven->buren[LINKS];
+		}
+		boven = boven->buren[ONDER];
+		delete boven->buren[BOVEN];
+	}
+	while (ingang->buren[RECHTS]) {
+		ingang = ingang->buren[RECHTS];
+		delete ingang->buren[LINKS];
+	}
+	delete ingang;
 }
 
 /*	Verplaatst de cursor naar boven. */
@@ -75,6 +124,7 @@ void gobord::verplaatsRechts () {
 	}
 }
 
+/*	Maakt het gobord aan door rijen aan te maken en te ritsen. */
 void gobord::bouwBord() {
 
 	bordvakje* rij1 = maakRij(breedte);
@@ -88,6 +138,7 @@ void gobord::bouwBord() {
 	}
 }
 
+/*	Maakt een dubbelverbonden pointerlijst door bordvakjes aan elkaar te verbinden. */
 bordvakje* gobord::maakRij(int aantal) {
 
 	bordvakje* rijingang = NULL;
@@ -105,6 +156,7 @@ bordvakje* gobord::maakRij(int aantal) {
 	return rijingang;
 }
 
+/*	Verbind twee rijen die door maakRij zijn gemaakt verticaal aan elkaar. */
 void gobord::rits(bordvakje* boven, bordvakje* onder) {
 
 	while (boven && onder) {
@@ -130,6 +182,7 @@ void gobord::rits(bordvakje* boven, bordvakje* onder) {
 	}
 }
 
+/*	Geeft een pointer naar het veld (i, j) terug. */
 bordvakje* gobord::locatie (int x, int y) {
 
 	bordvakje* loc = ingang;
@@ -146,26 +199,41 @@ bordvakje* gobord::locatie (int x, int y) {
 	return loc;
 }
 
+/*	Verandert de kleur van het bordvakje(i, j) naar de kleur die de zet doet.
+	Slaat de locatie op in de laatstezet pointer.
+	Voegt de zet toe aan de stapel.
+*/
 void gobord::doeZet (char kl, int i, int j) {
 
-	locatie(i, j)->kleur = kl;
 	laatstezet = locatie(i, j);
+	locatie(i, j)->kleur = kl;
+	Stapel.voegtoe(i, j);
 	stukken++;
-	controleer(kl);
 }
 
-void gobord::randomZet (char kl) {
+/*	Controleert of er een winnaar is of dat het bord vol is voordat er een zet wordt gezet.
+	Genereert een willekeurig getallen op het bord om een zet op te doen.
+	Als het vakje al bezet is wordt er een nieuw vakje gekozen.
+*/
+bool gobord::randomZet (char kl) {
 
 	int ranX, ranY;
 
+	if (controleer(switchKleur(kl))) {
+		return false;
+	}
+
 	do {
-		ranX = getRandmt19937(0, breedte);
-		ranY = getRandmt19937(0, hoogte);
+		ranX = getRandmt19937(0, breedte - 1);
+		ranY = getRandmt19937(0, hoogte - 1);
 	} while (locatie(ranX, ranY)->kleur != '\0');
 	
 	doeZet(kl, ranX, ranY);
+
+	return true;
 }
 
+/*	Controleert of er een winnaar is of dat het bord vol is. */
 bool gobord::controleer (char kl) {
 
 	string kleur;
@@ -177,27 +245,22 @@ bool gobord::controleer (char kl) {
 	}
 
 	if (gewonnen()) {
-		if (!vervolg) {
-			drukAf();
-			cout << kleur << " heeft gewonnen!" << endl;
-			exit(0);
-		}
+		stukken = 0;
+		//drukAf();
+		//cout << kleur << " heeft gewonnen!" << endl;
 		return true;
 	}
 	if (klaar()) {
-		if (!vervolg) {
-			drukAf();
-			cout << "Het bord is vol! Gelijkspel." << endl;
-			exit(0);
-		}
+		stukken = 0;
+		//drukAf();
+		//cout << "Het bord is vol! Gelijkspel." << endl;
 		return true;
 	}
 	return false;
 }
-    gobord();    gobord();      gobord();  gobord();
-// stapel.h -> gobord.h;
-// stapel * stapel  -> gobord.h;
 
+/*	Rekent uit of de laatste zet een winnende zet is door in elke richting te controleren
+	of er x vakjes op een rij staan. */
 bool gobord::gewonnen () {
 
 	if (laatstezet) {
@@ -212,12 +275,15 @@ bool gobord::gewonnen () {
 				teller++;
 				loc = loc->buren[i];
 			}
-			loc = laatstezet;
+			if (teller >= 2) {
+				return true;
+			}
+			teller = 0;
 			while (loc->buren[i + 4] && loc->kleur == loc->buren[i + 4]->kleur) {
 				teller++;
 				loc = loc->buren[i + 4];
 			}
-			if (teller >= 2) {
+			if (teller >= 4) {
 				return true;
 			}
 		}
@@ -225,17 +291,24 @@ bool gobord::gewonnen () {
 	return false;
 }
 
+/*	Returnt of het bord vol is of niet. */
 bool gobord::klaar () {
 
 	return (stukken == hoogte * breedte);
 }
 
-void gobord::zetTerug (int i, int j) {
+/*	Haalt de laatste zet van de stapel en maakt het bijbehorende bordvakje leeg. */
+void gobord::zetTerug () {
 
+	int i = 0, j = 0;
+
+	Stapel.verwijder(i, j);
 	locatie(i, j)->kleur = '\0';
 	stukken--;
 }
 
+/*	Berekent het aantal vervolgpartijen voor de huidige bordstand door deze functie
+	recursief aan te roepen. */
 int gobord::vervolgPartijen (char kl) {
 
 	int partijen = 0;
@@ -246,40 +319,54 @@ int gobord::vervolgPartijen (char kl) {
 
 	for (int j = 0; j < hoogte; j++) {
 		for (int i = 0; i < breedte; i++) {
+			/*	Bekijkt of er een leeg vakje is om een zet op te doen. */
 			if (locatie(i, j)->kleur == '\0') {
+				/* Doet een zet op een leeg vakje. */
 				doeZet(kl, i, j);
-				if (kl == 'w') {
-					kl = 'b';
-				} else {
-					kl = 'w';
-				}
+				switchKleur(kl);
 				if (gewonnen()) {
 					partijen++;
 				} else {
+					/*	Roept de functie recursief aan als er niet gewonnen is. */
 					partijen += vervolgPartijen(kl);
 				}
-				zetTerug(i, j);
-				if (kl == 'w') {
-					kl = 'b';
-				} else {
-					kl = 'w';
-				}
+				/*	Zet de laaste zet terug als er een winaar is of als de functie iets
+					heeft gereturned. */
+				zetTerug();
+				switchKleur(kl);
 			}
-		}
+		} 
 	}
 	return partijen;
 }
 
+/*	Wisselt de char 'w' naar 'b' en vice versa. */
+char gobord::switchKleur (char kl) {
+
+	if (kl == 'w') {
+		return 'b';
+	} else {
+		return 'w';
+	}
+	return '\0';
+}
+
+/*	Drukt het huidige gobord af. Als er een mens speelt zal de huidige cursorlocatie
+	geprint worden in een andere kleur. */
 void gobord::drukAf () {
 
 	bordvakje* hulp = ingang;
 	bordvakje* temp = ingang;
 	int j = 0;
 
+	if (cpu) {
+		muislocatie[0] = -1;
+		muislocatie[1] = -1;
+	}
+
 	for (int i = 0; i < hoogte; i++) {
 
 		while (hulp) {
-
 			if (muislocatie[0] == j && muislocatie[1] == i) {
 				if (hulp->kleur == 'w') {
 					cout << "\e[36m\u25CF\e[0m  ";
@@ -308,25 +395,7 @@ void gobord::drukAf () {
 	cout << endl;
 }
 
-gobord::~gobord() {
-  // TODO
-}//gobord::~gobord
-
-void gobord::setKleur(char kleur) {
- 	this->kleur = kleur;
-}
-
-char gobord::getKleur() {
-	return kleur;
-}
-
-char gobord::getCPUKleur() {
-	if (kleur == 'w') {
-		return 'b';
-	} else {
-		return 'w';
-	}
-}
+/*	Retunt de x en y waarden van de muislocatie respectievelijk. */
 
 int gobord::getMuisX() {
 	return muislocatie[0];
@@ -336,14 +405,7 @@ int gobord::getMuisY() {
 	return muislocatie[1];
 }
 
-int gobord::getHoogte() {
-	return hoogte;
-}
-
+/* Verandert de cpu variabele van de gobord klasse naar true of false. */
 void gobord::setCPU(bool cpu) {
 	this->cpu = cpu;
-}
-
-void gobord::setVervolg(bool vervolg) {
-	this->vervolg = vervolg;
 }
