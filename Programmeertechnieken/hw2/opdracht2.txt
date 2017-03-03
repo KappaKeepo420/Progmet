@@ -1,0 +1,47 @@
+Jort Gijzen s1874233
+Lennard Schaap s.........
+
+Opgave 1:
+a)
+
+int main() {
+  double *a = (double *)0x2000;
+  a += 18;
+  cout << a << endl;
+  return 0;
+}
+
+Geeft a = 0x2090.
+
+b)
+
+int opgaveb(= ) {
+  uint16_t *c = (uint16_t *)0x1000;
+  cout << "Opgave b: "<< c + 4 * sizeof(uint32_t) << endl;
+  return 0;
+}
+
+Geeft b = 0x1020.
+
+c)
+
+int opgavec() {
+  float **b = (float **)0x400;
+  cout << "Opgave c: " << b + 2 * 5 << endl;
+  return 0;
+}
+
+Geeft c = 0x450.
+
+d)  Snap de vraag niet helemaal.
+
+e)
+
+float A[] = { 3.14f, 4.54f, 9.54f, 0.34f };
+uintptr_t a = (uintptr_t)&A[0] + sizeof(9.54f);
+
+f)
+
+Heb niet heel veel kunnen doen want snapte er de ballen van :/
+staat ook echt niks op internet over en slides zijn onduidelijk.
+Succes, maak er maar een 6 van.
